@@ -5,6 +5,7 @@ import { useGlobal } from "@/app/context";
 import { useRouter } from "expo-router";
 import { title } from "@/custom";
 import { primary } from "@/custom";
+import { percentagePadding } from "./Element";
 
 
 export const ChevronHeader=()=>{
@@ -26,7 +27,11 @@ const router=useRouter()
 }
 
 
-export const ColoredHeader=({text,type}:{text:string,type:"normal"|"title"})=>{
+
+
+
+
+export const ColoredHeader=({text,type}:{text:string,type:"normal"|"title"|"black"})=>{
 const {textColor}=useGlobal()
 
 
@@ -35,7 +40,7 @@ const {textColor}=useGlobal()
   <>
    <View  style={styles.coloredHeader}>
  
-       <Text style={[styles.coloredHeaderText,]}>
+       <Text style={[styles.coloredHeaderText,{color:type==='black'?textColor:primary}]}>
          {text}
          {
           type==='title' && (
@@ -56,13 +61,39 @@ const {textColor}=useGlobal()
 
 
 
+export const LightHeader=({text,}:{text:string})=>{
+const {textColor}=useGlobal()
+const router=useRouter()
+
+ return (
+  <>
+
+  
+   <View  style={styles.lightHeaderContainer}>
+      
+   <MaterialCommunityIcons  size={RFValue(50)} color={textColor} name='chevron-left'  onPress={()=>router.back()}/>
+      <Text style={[styles.lightHeaderText,{color:textColor}]}>
+         {text}
+       
+       </Text>
+ 
+     </View>
+  
+  </>
+ )
+
+}
+
+
+
 const styles= StyleSheet.create({
  chevronContainer:{
   width:'100%',
   flexDirection:'row',
   justifyContent:'flex-start',
   alignItems:"center",
-  height:80,
+
+   height:100,
 
  },
 
@@ -70,17 +101,31 @@ const styles= StyleSheet.create({
     width:'100%',
     flexDirection:'row',
     justifyContent:'flex-start',
-    paddingLeft:"4%"
+    paddingLeft:percentagePadding
   },
 
  coloredHeaderText:{
-  fontSize:RFValue(25),
-  color:primary,
+  fontSize:RFValue(20),
+
   fontFamily:'Poppins-Bold'
  },
 
  coloredLogo:{
   fontFamily:'Poppins-Bold',
-  fontSize:RFValue(25),
- }
+  fontSize:RFValue(20),
+ },
+
+ lightHeaderContainer:{
+    width:'100%',
+    flexDirection:'row',
+   alignItems:"center",
+  marginVertical:20,
+
+  },
+
+  lightHeaderText:{
+  fontSize:RFValue(24),
+  fontFamily:'Poppins-Regular',
+  
+ },
 })

@@ -13,7 +13,7 @@ const OtpComponent = () => {
 const handleText = (value: string, i: number) => {
     setNumber((prev) => {
       const arr = prev.split("");
-      arr[i] = value; // replace the character at index
+      arr[i] = value; 
       return arr.join("");
     });
   };

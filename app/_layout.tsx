@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet,Platform } from 'react-native';
 import  AppProvider  from './context';
 import { Slot } from 'expo-router';
+import { ResponseModal } from '@/components/ui/reponse';
 
 import { useRouter, useRootNavigationState } from "expo-router";
 
@@ -20,9 +21,9 @@ const _layout = () => {
   return (
 
   
-    
+             
          <AppProvider>
-   
+           <ResponseModal/>
           <Slot />
   
       </AppProvider>

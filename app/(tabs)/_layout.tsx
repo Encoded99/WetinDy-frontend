@@ -1,45 +1,147 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import React,{useEffect,} from 'react';
+import {  StyleSheet,BackHandler } from "react-native";
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Tabs, } from "expo-router";
+import { useGlobal } from "@/app/context";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { primary } from '@/custom';
+import { usePathname } from 'expo-router';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+
+
+
+
+const Layout = () => {
+  const { background, textColor,} = useGlobal();
+
+
+const pathname=usePathname()
+
+
+
+
+ useEffect(() => {
+    
+    const isNeededPath = pathname === '/notifications' || pathname === '/post' || pathname === '/';
+
+    const backAction = () => {
+      if (isNeededPath) {
+        BackHandler.exitApp();
+        return true; 
+      }
+      return false; 
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+  
+    return () => backHandler.remove();
+  }, [pathname]); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  const indicatorColor = 'white'
+  const noIndicator = "grey";
 
   return (
-    <Tabs
+    <>
+     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarStyle: { backgroundColor:background, },
+
+ tabBarItemStyle: {
+    borderRadius: 8,
+    marginHorizontal: 5, 
+    overflow: 'hidden',
+    
+  },
+
+
+        tabBarLabelStyle: { fontSize: RFValue(10), fontWeight: "bold" },
+        tabBarActiveTintColor: indicatorColor,
+        tabBarInactiveTintColor: noIndicator,
+        animation: "none",
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        tabBarActiveBackgroundColor:primary,
+        
+      }}
+    >
+      {tabRoutes.map((item) => (
+        <Tabs.Screen
+          key={item.name} // Ensure unique key
+          name={item.name}
+          options={{
+            tabBarLabel: item.label,
+            tabBarIcon: ({ color, size }) => (
+              <>
+              
+              <MaterialCommunityIcons 
+                name={item.icon as keyof typeof MaterialCommunityIcons.glyphMap}
+               color={textColor} 
+               size={RFValue(25)}/>
+  
+              
+              
+              </>
+             
+              
+              
+            ),
+
+           
+            
+            headerShown: false,
+          }}
+        />
+      ))}
     </Tabs>
+
+   
+    </>
+   
   );
-}
+};
+
+
+
+const tabRoutes = [
+  { name: "(home)", icon: 'home', label:'Home' },
+  { name: "(search)", icon: "magnify", label:'Search' },
+  
+  { name: "(create)", icon: "plus", label:"Create" },
+  { name: "(business)", icon: "briefcase",  label:"Business" },
+  { name: "(profile)", icon: "account",label:'Profile' },
+];
+const styles = StyleSheet.create({
+  counterContainer: {
+    height: 19,
+    width: 19,
+    borderRadius: 19,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    left: 13,
+    top: -6,
+  },
+  bellCount: {
+    fontSize: RFValue(10),
+
+  },
+});
+
+export default Layout;

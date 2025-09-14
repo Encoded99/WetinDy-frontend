@@ -9,8 +9,8 @@ import React,{Dispatch,SetStateAction} from 'react';
 import { title } from '@/custom';
 import country from '../data/countries_with_flags.json'
 import { useRegister } from '@/store/auth';
-
-const {height}=Dimensions.get('window')
+import { useRouter } from 'expo-router';
+const {height,width}=Dimensions.get('window')
 
 
 
@@ -46,7 +46,7 @@ const {background}= useGlobal()
 
 export const Slogan=({text}:{text:string})=>{
 
-  const  {textColor,greyText}=useGlobal()
+  const  {textColor}=useGlobal()
 
   return (
     <>
@@ -62,14 +62,28 @@ export type InputType={
   text:string,
   setText:(value:string)=>void,
   icon:IconComponentType,
- isPassword?:boolean
+ isSubmitClicked:boolean,
+ type:"email"|"password"|"text"|"telephone",
+ instance:"registeration"|"normal"
+ 
 
 }
 
+export   const emailRegex = /^\S+@\S+\.\S+$/;
+ export  const passwordRegex = /^(?=.*[A-Za-z])(?=.*[\d@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+
+export const phoneRegex = /^\d+$/;
+
 export const InputField=React.memo((params:InputType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,label,setText,icon,isPassword}=params
+  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
   const [showPassword,setShowPassword]=useState<boolean>(false)
+
+  const isEmailFormat=emailRegex.test(text);
+ 
+ const isPasswordFormat=passwordRegex.test(text);
+  
+
   return(
     <>
 
@@ -80,7 +94,7 @@ export const InputField=React.memo((params:InputType)=>{
        
 
         {
-          isPassword===undefined ? (
+          type!=='password' ? (
             <>
            <TextInput style={[styles.textInput,{borderColor:greyText}]}
            value={text}
@@ -99,7 +113,7 @@ export const InputField=React.memo((params:InputType)=>{
 
 
       {
-        isPassword===undefined ? (
+                 type!=='password' ? (
           <>
          <MaterialCommunityIcons style={styles.inputLogo} size={RFValue(25)} color={textColor}  name={icon}/>  
           </>
@@ -110,14 +124,60 @@ export const InputField=React.memo((params:InputType)=>{
         )
       }
 
+
+
+    
+      
+
      
        </View>
       
+   
+
+        {
+               isSubmitClicked && text==='' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>This field can not be empty</Text>
+       </View>
+                </>
+               )
+            }
+
+
+
+             {
+               isSubmitClicked && type==='email' && text!=='' && !isEmailFormat &&  instance==='registeration' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>Please enter a valid email address</Text>
+       </View>
+                </>
+               )
+            }
+
+
+
+               {
+               isSubmitClicked && type==='password' && text!=='' && !isPasswordFormat && instance==='registeration' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+     <Text style={styles.warningText}>Password must be at least 8 characters long and include at least one letter (uppercase or lowercase) and at least one number or special character. 
+Allowed special characters are: @, $, !, %, *, ?, &, and .</Text>
+       </View>
+                </>
+               )
+            }
 
     </View>
     </>
   )
 })
+
+
+
 
 
 
@@ -151,7 +211,7 @@ const CountryPicker=(param:CountryPickerType)=>{
 
 
     setSelectedCountry(item)
-    setRegisterData({prefix:item.dial_code})
+    setRegisterData({prefix:item.dial_code,country:item.name})
     
 
   }
@@ -243,11 +303,13 @@ export const initialCountrySelected={
 }
 
 export const SelectInput=React.memo((params:InputType)=>{
-  const {greyText,darkGreyText,textColor}= useGlobal()
-  const {text,label,setText,}=params
- 
-   const [isVisible,setIsVisible]=useState<boolean>(false)
+  const {greyText,darkGreyText,}= useGlobal()
+  const {text,label,setText,isSubmitClicked,instance,type}=params
+ const [isVisible,setIsVisible]=useState<boolean>(false)
 const [selectedCountry,setSelectedCountry]=useState<CountryType>(initialCountrySelected)
+const isPhoneFormat=phoneRegex.test(text);
+
+
 
 const selectorParams={
     isVisible,
@@ -275,15 +337,223 @@ const selectorParams={
         </View>
            <TextInput style={[styles.smallTextInput,{borderColor:greyText}]}
            value={text}
+           keyboardType="numeric" 
            onChangeText={(value)=>{setText(value);}}/> 
-      
+          
        </View>
       
+   
+             {
+               isSubmitClicked && type==='telephone' && text!=='' && !isPhoneFormat &&  instance==='registeration' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={{fontFamily:"Poppins-Bold",color:'red',fontSize:RFValue(14),marginLeft:5}}>Please enter a valid phone number</Text>
+       </View>
+                </>
+               )
+            }
+    </View>
+    </>
+  )
+})
+
+
+
+
+
+export const HalfInputField=React.memo((params:InputType)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
+  const [showPassword,setShowPassword]=useState<boolean>(false)
+
+  const isEmailFormat=emailRegex.test(text);
+ 
+ const isPasswordFormat=passwordRegex.test(text);
+  
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+      <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
+       <View style={{width:"100%",position:"relative"}}>
+
+       
+  <TextInput style={[styles.textInput,{borderColor:greyText}]}
+           value={text}
+           onChangeText={(value)=>{setText(value);}}/> 
+
+
+    
+      
+
+     
+       </View>
+      
+   
+
+        {
+               isSubmitClicked && text==='' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>This field can not be empty</Text>
+       </View>
+                </>
+               )
+            }
+
+
+
+             {
+               isSubmitClicked && type==='email' && text!=='' && !isEmailFormat &&  instance==='registeration' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>Please enter a valid email address</Text>
+       </View>
+                </>
+               )
+            }
+
+
+
+               {
+               isSubmitClicked && type==='password' && text!=='' && !isPasswordFormat && instance==='registeration' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+     <Text style={styles.warningText}>Password must be at least 8 characters long and include at least one letter (uppercase or lowercase) and at least one number or special character. 
+Allowed special characters are: @, $, !, %, *, ?, &, and .</Text>
+       </View>
+                </>
+               )
+            }
 
     </View>
     </>
   )
 })
+
+
+
+
+export const DescriptionField=React.memo((params:InputType)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
+
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+      <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
+       
+
+   
+
+           <View  style={[styles.imageContainer,{borderColor:greyText,backgroundColor:greyText}]}>
+
+            <MaterialCommunityIcons color={textColor} size={RFValue(45)} name='camera-outline'/>
+            <Text style={{color:textColor,fontSize:RFValue(16),fontFamily:'Poppins-Regular'}}>Add Photos</Text>
+           </View>
+      
+        {
+               isSubmitClicked && text==='' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>This field can not be empty</Text>
+       </View>
+                </>
+               )
+            }
+
+
+
+           
+
+
+
+             
+
+    </View>
+    </>
+  )
+})
+
+
+
+export const ButtonWithSkip=({skipFunction,continueFunction}:{skipFunction:()=>void,continueFunction:()=>void})=>{
+
+
+  return (
+    <>
+
+   
+    <View style={styles.skipContainer}>
+
+       <Text style={styles.skipText}>Skip</Text>
+
+
+       <TouchableOpacity style={styles.skipBtn}>
+          <Text style={styles.skipBtnText}>Continue</Text>
+       </TouchableOpacity>
+
+    </View>
+    
+    </>
+  )
+}
+
+
+
+
+
+interface SearchSelectField{
+
+  onSearch:()=>void,
+  onClickDown:()=>void,
+  label:string
+}
+
+
+export const SearchSelectField=React.memo((params:SearchSelectField)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {label,onSearch,onClickDown}=params
+  const [text,setText]= useState<string>('')
+  
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+      <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
+       <View style={[styles.searchSelectFieldContainer,{borderColor:greyText}]}>
+
+       
+
+
+
+        <TextInput style={[styles.searchSelectInput]}
+           value={text}
+           onChangeText={(value)=>{setText(value);}}/> 
+
+
+         <View style={styles.dropDownContainer}>
+           <MaterialCommunityIcons  size={RFValue(25)} color={textColor}  name={'chevron-down'}/>
+         </View>
+         
+       </View>
+    </View>
+    </>
+  )
+})
+
+
+
+
+
 
 
 
@@ -307,6 +577,7 @@ export const Terms=()=>{
 
 export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
   const {textColor}=useGlobal()
+  const router=useRouter()
   return (
     <>
     <View style={{width:'100%',marginVertical:RFValue(30)}}>
@@ -315,7 +586,7 @@ export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
           <>
            <Text style={[styles.termText,{color:textColor}]}>Already have an account? 
     
-    <Text style={{color:primary,fontFamily:'Poppins-Bold'}}> Sign in </Text>
+    <Text style={{color:primary,fontFamily:'Poppins-Bold'}} onPress={()=>router.push('/(auth)/(sign-in)')}> Sign in </Text>
     </Text>
           </>
         )
@@ -326,7 +597,10 @@ export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
           <>
            <Text style={[styles.termText,{color:textColor}]}>Don’t have an account? 
     
-    <Text style={{color:primary,fontFamily:'Poppins-Bold'}}> Sign up for {title}</Text>
+    <Text style={{color:primary,fontFamily:'Poppins-Bold'}}
+    
+    onPress={()=>router.push('/(auth)/(register)')}
+    > Sign up for {title}</Text>
     </Text>
           </>
         )
@@ -338,7 +612,8 @@ export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
   )
 }
 
-const wantedHeight=RFValue(55)
+export const wantedHeight=RFValue(50)
+export const percentagePadding='4%'
 
 const styles = StyleSheet.create({
   submitBtn:{
@@ -370,7 +645,7 @@ const styles = StyleSheet.create({
   btnText:{
     color:'white',
     fontFamily:'Poppins-Bold',
-    fontSize:RFValue(18),
+    fontSize:RFValue(16),
     marginLeft:4
 
   },
@@ -380,7 +655,7 @@ const styles = StyleSheet.create({
      width:'100%',
     flexDirection:'row',
     justifyContent:'flex-start',
-    paddingLeft:"4%"
+    paddingLeft:percentagePadding
 
   },
 
@@ -392,7 +667,7 @@ const styles = StyleSheet.create({
   inputContainer:{
     width:'100%',
     alignSelf:"center",
-    paddingHorizontal:"4%",
+    paddingHorizontal:percentagePadding,
    
   },
   inputLabel:{
@@ -405,13 +680,30 @@ const styles = StyleSheet.create({
     borderWidth:2,
        height:wantedHeight,
        padding:8,
-       fontSize:RFValue(18)
+       fontSize:RFValue(16),
+       fontFamily:'Poppins-Regular',
+       textAlignVertical: "center", 
+  
+       
+  },
 
+   imageContainer:{
+    width:"100%",
+    borderRadius:6,
+    borderWidth:2,
+       padding:8,
+       fontSize:RFValue(16),
+       fontFamily:'Poppins-Regular',
+      height:300,
+
+      justifyContent:'center',
+      alignItems:'center'
+     
   },
 
   inputLogo:{
     position:'absolute',
-    right:"2%",
+    right:percentagePadding,
     top:"25%"
 
   },
@@ -435,7 +727,9 @@ const styles = StyleSheet.create({
     borderWidth:2,
        height:wantedHeight,
        padding:8,
-       fontSize:RFValue(18)
+       fontSize:RFValue(16),
+ fontFamily:'Poppins-Regular',
+  textAlignVertical: "center", 
 
   },
   selectField:{
@@ -495,5 +789,74 @@ const styles = StyleSheet.create({
     fontSize:RFValue(17),
     marginRight:8,
 
+  },
+  emptyFieldContainer:{
+    width:'100%',
+    flexDirection:'row',
+    alignItems:"center",
+    marginTop:6
+  },
+  warningText:{
+    fontFamily:"Poppins-Bold",color:'red',fontSize:RFValue(11),marginLeft:5
+  },
+
+  skipContainer:{
+    width:"100%",
+    height:wantedHeight,
+    flexDirection:"row",
+    justifyContent:'space-between',
+    alignItems:'center',
+    paddingHorizontal:percentagePadding
+  },
+  skipText:{
+    fontSize:RFValue(18),
+    color:primary,
+    fontFamily:"Poppins-Bold",
+  },
+  skipBtn:{
+    width:'40%',
+    height:'100%',
+    backgroundColor:primary,
+    borderRadius:0.2*width,
+    justifyContent:'center',
+    alignItems:'center'
+
+  },
+  skipBtnText:{
+    color:'white',
+    fontFamily:"Poppins-Regular",
+    fontSize:RFValue(17)
+  },
+
+  searchSelectFieldContainer:{
+    width:'100%',
+    alignSelf:"center",
+    justifyContent:"center",
+    flexDirection:"row",
+   borderRadius:6,
+ borderWidth:2,
+  },
+
+
+   searchSelectInput:{
+    width:"80%",
+       height:wantedHeight,
+       padding:8,
+       fontSize:RFValue(16),
+       fontFamily:'Poppins-Regular',
+       textAlignVertical: "center", 
+  
+      
+  },
+
+  dropDownContainer:{
+    width:'20%',
+    justifyContent:"center",
+    alignItems:"center",
+  
+      height:wantedHeight,
+   
   }
+
+
 });

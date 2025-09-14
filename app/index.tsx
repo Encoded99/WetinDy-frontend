@@ -18,14 +18,15 @@ const router= useRouter()
 
 
 const handleSubmit=()=>{
-
+  router.push('/(auth)/(register)')
 }
 
 
 useEffect(()=>{
 
 const t=setTimeout(() => {
-  // router.push('/(auth)/(register)/partTwo')
+//  router.push('/(auth)/(sign-in)/otp')
+ router.push('/(tabs)/(create)/screen-4')
 }, (500));
 
   return ()=>clearTimeout(t)

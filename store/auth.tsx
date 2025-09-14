@@ -4,21 +4,22 @@ import {create} from 'zustand'
 export type RegisterDataType={
  email:string,
  password:string,
- secondPassword:string,
+
  telephone:string,
  firstName:string,
  lastName:string,
  prefix:string,
+ country:string,
 }
 
 export const  intialData:RegisterDataType={
  email:"",
  password:"",
- secondPassword:"",
  telephone:"",
  firstName:"",
  lastName:"",
- prefix:""
+ prefix:"+1",
+ country:"Canada",
 }
 
 
@@ -67,4 +68,19 @@ export const useLogin=create<UseLoginType>((set)=>({
   resetEmail:'',
  setResetEmail:(value)=>set({resetEmail:value})
 
+}))
+
+
+type UseAuthType={
+  responseMessage:string,
+   setResponseMessage:(param:string)=>void,
+   isError:boolean,
+   setIsError:(param:boolean)=>void,
+}
+
+export const useAuth=create<UseAuthType>((set)=>({
+  responseMessage:'',
+  setResponseMessage:(value)=>set({responseMessage:value}),
+  isError:false,
+   setIsError:(value)=>set({isError:value})
 }))

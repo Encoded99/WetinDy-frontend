@@ -4,11 +4,8 @@ import { useGlobal } from '@/app/context'
 import { StyleSheet } from 'react-native'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { ChevronHeader,ColoredHeader } from '@/components/Header'
-import { primary } from '@/custom'
-import { Slogan,InputField,InputType,Terms, SubmitBtn,AccountStatus } from '@/components/Element'
-import { useLogin } from '@/store/auth'
-import { title } from '@/custom'
-
+import { Slogan,InputField,InputType, SubmitBtn, } from '@/components/Element'
+import { AuthLayOut } from '@/components/LayOut'
 
 
 const  ForgotPassword = () => {
@@ -16,9 +13,9 @@ const  ForgotPassword = () => {
   const {background,}=useGlobal()
   const [password,setPassword]=useState<string>('')
   const [secondPassword,setSecondPassword]=useState<string>('')
-
+    const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
  
- 
+ const  instance="registeration"
  
  
  type InputArrayType={
@@ -37,7 +34,9 @@ const  ForgotPassword = () => {
   text:password,
   icon:"eye-outline",
   setText:(value:string)=>(value:string)=>setPassword(value),
-  isPassword:true,
+    type:"password",
+  isSubmitClicked,
+   instance
     },
     
   },
@@ -49,7 +48,9 @@ const  ForgotPassword = () => {
   text:secondPassword,
   icon:"eye-outline",
   setText:(value:string)=>setSecondPassword(value),
-  isPassword:true,
+    type:"password",
+   isSubmitClicked,
+    instance
     },
   
   },
@@ -67,9 +68,10 @@ const  ForgotPassword = () => {
  
 
  return (
-     <View style={[styles.container,{backgroundColor:background}]}>
-       
-       <ChevronHeader/>
+
+
+  <AuthLayOut>
+ <ChevronHeader/>
        <ColoredHeader type='normal' text={'Create New Password'}/>
        <Slogan  text={`Enter new password`}/>
  
@@ -90,24 +92,13 @@ const  ForgotPassword = () => {
    <View style={{justifyContent:"center",alignItems:"center",width:"100%",marginTop:RFValue(200)}}>
   <SubmitBtn text='Continue' trigger={handleSubmit}  type='normal'/>
    </View>
- 
-     </View>
+  </AuthLayOut>
+
+     
    )
 }
 
 
-const styles= StyleSheet.create({
-
-  container:{
-    width:"100%",
-    padding:'2%',
-    flex:1,
-
-  },
-
- 
-
-})
 
 
 export default  ForgotPassword

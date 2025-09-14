@@ -19,5 +19,5 @@
   {"name":"Sweden","flag":"🇸🇪","code":"SE","dial_code":"+46"},
   {"name":"Switzerland","flag":"🇨🇭","code":"CH","dial_code":"+41"},
   {"name":"United Kingdom","flag":"🇬🇧","code":"GB","dial_code":"+44"},
-  {"name":"United States","flag":"🇺🇸","code":"US","dial_code":"+1"}
+  {"name":"United States","flag":"🇺🇸","code":"US","dial_code":"+1"},{"name":"Nigeria","flag":"🇳🇬","code":"NG","dial_code":"+234"}
 ]
