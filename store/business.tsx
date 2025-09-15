@@ -13,11 +13,12 @@ interface DayInfo{
 
 
 export interface CategoryType {
-  id: string;
+  _id: string;
   name: string;
   pluralName: string;
   shortName: string;
-  categories?: CategoryType[]; 
+  path:string,
+  subcategories:string[]
 }
 
 
@@ -44,9 +45,9 @@ type BusinessType={
   isVerified:boolean,
   description:string,
   categories:{
-    categoryOne?:CategoryType,
-    categoryTwo?:CategoryType,
-    categoryThree?:CategoryType,
+    categoryOne?:string,
+    categoryTwo?:string,
+    categoryThree?:string,
   },
   operatingDays:{
     monday:DayInfo,
@@ -85,12 +86,13 @@ const openDay={
 
 
 
-const initialCategory={
-  id:"",
+export const initialCategory={
+  _id:"",
   name:"",
   pluralName:"",
   shortName:"",
-  categories:[]
+   subcategories:[],
+   path:''
 }
 
 const initialBusiness={
@@ -105,9 +107,9 @@ const initialBusiness={
   isVerified:false,
   description:'',
   categories:{
-    categoryOne:initialCategory,
-    categoryTwo:initialCategory,
-    categoryThree:initialCategory,
+    categoryOne:'',
+    categoryTwo:'',
+    categoryThree:'',
   },
  operatingDays:{
     monday:openDay,
@@ -130,17 +132,42 @@ const initialBusiness={
   
 }
 
+export type CategoryInstanceType='category-1'|'category-2'|'category-3'
+
 
 export type UseBusinessType={
   business:BusinessType,
-  setBusiness:(value:Partial<BusinessType>)=>void
+  setBusiness:(value:Partial<BusinessType>)=>void,
+  
+categoryData:CategoryType[],
+setCategoryData:(value:CategoryType[])=>void,
+ categoryInstance:CategoryInstanceType,
+ setCategoryInstance:(value:Partial<CategoryInstanceType>)=>void,
+ selectedCategory:CategoryType,
+ setSelectedCategory:(value:CategoryType)=>void,
+selectedCategoryData:CategoryType[],
+setSelectedCategoryData:(value:CategoryType)=>void,
+  
 }
+
+
 
 
 
 export const useBusiness=create<UseBusinessType>((set)=>({
 
   business:initialBusiness,
-  setBusiness:(value)=>set((state)=>({business:{...state.business,...value}}))
+  setBusiness:(value)=>set((state)=>({business:{...state.business,...value}})),
+   categoryData:[],
+   setCategoryData:(value)=>set({categoryData:value}),
+   categoryInstance:'category-1',
+   setCategoryInstance:(value)=>set({categoryInstance:value}),
+   selectedCategory:initialCategory,
+   setSelectedCategory:(value)=>set({selectedCategory:value}),
+   selectedCategoryData:[],
+   setSelectedCategoryData:(value)=>set((state)=>({selectedCategoryData:{...state.selectedCategoryData,value}}))
+
 
 }))
+
+

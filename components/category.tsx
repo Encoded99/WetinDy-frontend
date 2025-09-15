@@ -1,64 +1,151 @@
-import { View, Text,FlatList,StyleSheet } from 'react-native'
-import React,{useState} from 'react'
-import country from '../data/taxonomy.json'
-import { CategoryType } from '@/store/business'
+import { Text,StyleSheet,Dimensions, TouchableOpacity,} from 'react-native'
+import React from 'react'
+import { CategoryType, } from '@/store/business'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useGlobal } from '@/app/context'
 import { percentagePadding } from './Element'
-import {Paths} from '../data/paths'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useBusiness } from '@/store/business'
 
 
-// Utility to build paths outside renderItem
-const buildPaths = (category: CategoryType, parentPath = ""): string[] => {
-  const currentPath = parentPath ? `${parentPath}  >  ${category.name}` : category.name;
 
-  if (!category.categories || category.categories.length === 0) {
-    return [currentPath];
-  }
 
-  return category.categories.flatMap((sub) => buildPaths(sub, currentPath));
-};
+const {height}=Dimensions.get('window')
 
 // Precompute all paths into a flat array
 //const allPaths = country.flatMap((cat) => buildPaths(cat));
 
 
-const Category = () => {
-  const { textColor } = useGlobal();
 
-  const renderItem = ({ item }: { item: string }) => (
-    <View style={styles.categoryLine}>
-      <Text style={[styles.lineText, { color: textColor }]}>{item}</Text>
-    </View>
-  );
 
-  return (
-    <FlatList
-      data={Paths}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => index.toString()}
-      showsVerticalScrollIndicator={false}
-      initialNumToRender={20} // 🟢 Render fewer at first
-      maxToRenderPerBatch={20} // 🟢 Batch rendering
-      windowSize={10} // 🟢 Reduce memory usage
-      removeClippedSubviews // 🟢 Unmount off-screen items
-     
-    />
-  );
-};
+
+
+  export const CategoryRenderItem=({item,textColor}:{item:CategoryType,textColor:string})=>{
+   const {greyText}=useGlobal()
+   const {business,setSelectedCategory,selectedCategory,categoryInstance,setSelectedCategoryData}=useBusiness()
+  const {catId}=useLocalSearchParams()
+  const router=useRouter()
+ 
+
+
+
+ const handlePress=async()=>{
+
+
+
+
+if (selectedCategory.subcategories.length!==0){
+  switch(categoryInstance){
+    case  'category-2':
+  business.categories.categoryTwo=item._id
+      break;
+    case 'category-3':
+       business.categories.categoryThree=item._id
+      break;
+    default :
+       business.categories.categoryOne=item._id
+      break;
+  }
+
+
+  setSelectedCategoryData(item)
+  router.push('/(tabs)/(create)/screen-4')
+}
+
+else{
+
+  setSelectedCategory(item)
+ 
+ router.push(`/(tabs)/(create)/(category)/${item._id}`)
+   
+
+}
+
+   
+  
+ 
+ 
+ 
+ }
+ 
+ 
+     return (
+       <>
+        <TouchableOpacity style={[styles.categoryLine,{borderBottomColor:greyText}]}
+        onPress={handlePress}
+        >
+       <Text style={[styles.lineText, { color: textColor }]}>{item.name}</Text>
+     </TouchableOpacity>
+       
+       </>
+     )
+   }
+ 
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 const styles= StyleSheet.create({
   categoryLine:{
    width:"100%",
-   paddingHorizontal:percentagePadding
+   paddingHorizontal:percentagePadding,
+   borderBottomWidth:1,
+   justifyContent:"center",
+ 
+ 
   },
   lineText:{
-   fontSize:RFValue(11),
+   fontSize:RFValue(15),
    fontFamily:'Poppins-Regular',
    marginVertical:20,
-   flexWrap:"wrap"
-  }
+   minHeight:30,
+     
+  },
+
+
+categoryHeader:{
+    width:"100%",
+    marginTop:0,
+
+     
+  },
+
+  
+  modalContainer: {
+    width: '100%',
+    height:height,
+   
+    flex:1,
+ 
+ 
+
+  },
+
+
+
 })
 
-export default Category
+
+
+
+
+
+
+
+

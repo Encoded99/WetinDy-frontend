@@ -1,5 +1,5 @@
 
-import { StyleSheet, TouchableOpacity,Text,View,TextInput,Modal,FlatList,Dimensions} from 'react-native';
+import { StyleSheet, TouchableOpacity,Text,View,TextInput,Modal,FlatList,Dimensions, Pressable} from 'react-native';
 import { primary } from '@/custom';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -10,6 +10,10 @@ import { title } from '@/custom';
 import country from '../data/countries_with_flags.json'
 import { useRegister } from '@/store/auth';
 import { useRouter } from 'expo-router';
+import { CategoryInstanceType, useBusiness } from '@/store/business';
+
+
+
 const {height,width}=Dimensions.get('window')
 
 
@@ -510,18 +514,20 @@ export const ButtonWithSkip=({skipFunction,continueFunction}:{skipFunction:()=>v
 
 
 
-interface SearchSelectField{
+interface SearchSelectFieldType{
 
-  onSearch:()=>void,
-  onClickDown:()=>void,
-  label:string
+  text:string,
+  setText:Dispatch<SetStateAction<string>>,
+
+  label:string,
+  setShowModal:Dispatch<SetStateAction<boolean>>,
 }
 
 
-export const SearchSelectField=React.memo((params:SearchSelectField)=>{
+export const SearchSelectField=React.memo((params:SearchSelectFieldType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {label,onSearch,onClickDown}=params
-  const [text,setText]= useState<string>('')
+  const {label,setShowModal,setText,text}=params
+
   
 
   return(
@@ -537,12 +543,121 @@ export const SearchSelectField=React.memo((params:SearchSelectField)=>{
 
         <TextInput style={[styles.searchSelectInput]}
            value={text}
-           onChangeText={(value)=>{setText(value);}}/> 
+           onChangeText={(value)=>{setText(value);}}
+             placeholder='Search for categories'
+           
+           
+           /> 
 
-
-         <View style={styles.dropDownContainer}>
+ 
+         <Pressable style={styles.dropDownContainer}  onPress={()=>setShowModal(true)}>
            <MaterialCommunityIcons  size={RFValue(25)} color={textColor}  name={'chevron-down'}/>
-         </View>
+         </Pressable>
+         
+       </View>
+    </View>
+    </>
+  )
+})
+
+
+
+interface SearchFieldType{
+
+  text:string,
+  setText:Dispatch<SetStateAction<string>>;
+  handleCancel:()=>void,
+}
+
+
+
+
+
+
+export const DropDown=React.memo(({label,value}:{label:string,value:CategoryInstanceType})=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {setCategoryInstance}=useBusiness()
+  const router= useRouter()
+
+
+  
+const handleClick=()=>{
+
+console.log(value,'paramssssss')
+
+setCategoryInstance(value)
+ router.push('/(tabs)/(create)/(category)')
+}
+
+
+  
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+      <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
+       <TouchableOpacity style={[styles.dropDownFieldContainer,{borderColor:greyText}]}
+       onPress={handleClick}
+       >
+        <Text style={{color:darkGreyText,fontSize:RFValue(14),fontFamily:'Poppins-Regular'}}>e.g Food</Text>
+
+        <MaterialCommunityIcons name='chevron-right' size={RFValue(30)} color={textColor}/>
+
+       </TouchableOpacity>
+    </View>
+    </>
+  )
+})
+
+
+
+
+
+
+
+export const SearchField=React.memo((params:SearchFieldType)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {text,setText,handleCancel}=params
+  
+  
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+       <View style={[styles.searchSelectFieldContainer,{borderColor:greyText}]}>
+
+       
+        <TextInput style={[styles.searchInput,{width:'100%',paddingHorizontal:'15%'}]}
+           value={text}
+           onChangeText={(value)=>{setText(value);}}
+         placeholder='Find Category'
+           /> 
+
+           {
+              !text && (
+                <>
+                 <MaterialCommunityIcons style={styles.searchLogo} size={RFValue(25)} color={textColor}  name={'magnify'}
+                 onPress={handleCancel}
+                 />
+                </>
+              )
+             }
+
+ 
+             
+             {
+              text && (
+                <>
+                 <MaterialCommunityIcons style={styles.inputLogo} size={RFValue(25)} color={textColor}  name={'close-circle'}
+                 onPress={handleCancel}
+                 />
+                </>
+              )
+             }
+          
+        
          
        </View>
     </View>
@@ -707,6 +822,15 @@ const styles = StyleSheet.create({
     top:"25%"
 
   },
+
+
+
+   searchLogo:{
+    position:'absolute',
+    left:percentagePadding,
+    top:"25%"
+
+  },
   termText:{
     fontSize:RFValue(13),
   
@@ -848,6 +972,16 @@ const styles = StyleSheet.create({
   
       
   },
+   searchInput:{
+    width:"100%",
+       height:wantedHeight,
+       padding:8,
+       fontSize:RFValue(16),
+       fontFamily:'Poppins-Regular',
+       textAlignVertical: "center", 
+  
+      
+  },
 
   dropDownContainer:{
     width:'20%',
@@ -856,7 +990,20 @@ const styles = StyleSheet.create({
   
       height:wantedHeight,
    
-  }
+  },
+
+  dropDownFieldContainer:{
+    width:'100%',
+     padding:'2%',
+      borderRadius:6,
+      height:wantedHeight,
+      justifyContent:'space-between',
+      alignItems:'center',
+    borderWidth:2,
+    flexDirection:'row'
+  },
+
+  
 
 
 });

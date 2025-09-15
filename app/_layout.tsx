@@ -3,8 +3,7 @@ import { StyleSheet,Platform } from 'react-native';
 import  AppProvider  from './context';
 import { Slot } from 'expo-router';
 import { ResponseModal } from '@/components/ui/reponse';
-
-import { useRouter, useRootNavigationState } from "expo-router";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 
 
@@ -16,18 +15,21 @@ import { useRouter, useRootNavigationState } from "expo-router";
 const _layout = () => {
 
 
-
+const queryClient = new QueryClient();
 
   return (
 
-  
-             
-         <AppProvider>
+   <QueryClientProvider client={queryClient}>
+ <AppProvider>
            <ResponseModal/>
           <Slot />
   
       </AppProvider>
 
+
+   </QueryClientProvider>
+             
+        
  
  
   );

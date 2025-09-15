@@ -79,6 +79,19 @@ const Layout = () => {
           },
         }}
       />
+
+
+
+
+        <Stack.Screen
+           name="(category)"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
     </Stack>
 
     
