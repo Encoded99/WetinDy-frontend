@@ -12,8 +12,7 @@ const index = () => {
 
 const {fontLoaded}= useFonts()
 const {textColor,background,greyText,darkGreyText}=useGlobal()
-
-
+const isActive=true
 const router= useRouter()
 
 
@@ -26,7 +25,9 @@ useEffect(()=>{
 
 const t=setTimeout(() => {
 //  router.push('/(auth)/(sign-in)/otp')
-  router.push('/(tabs)/(create)/screen-4')
+//router.push('/(tabs)/(create)/name')
+ router.push('/(tabs)/(create)/operation')
+ // router.push('/(tabs)/(create)')
 // router.push('/(tabs)/(create)/68c80d77a278c694034ed7f2')
 }, (500));
 
@@ -59,7 +60,7 @@ if (!fontLoaded){
     <Text style={[styles.heading,{color:textColor}]}>Welcome to <Text style={styles.logo}>{title}</Text></Text>
 
        <View style={[styles.btnContainer,styles.topBtnContainer]}>
-             <SubmitBtn type='normal' text={'Continue with Phone'} icon='phone' trigger={handleSubmit}>
+             <SubmitBtn isActive={isActive} type='normal' text={'Continue with Phone'} icon='phone' trigger={handleSubmit}>
 
         </SubmitBtn>
         </View>
@@ -83,19 +84,19 @@ if (!fontLoaded){
         </View>
 
          <View style={styles.btnContainer}>
-             <SubmitBtn type='white' text={'Continue with Google'} icon="google" trigger={handleSubmit}>
+             <SubmitBtn isActive={isActive} type='white' text={'Continue with Google'} icon="google" trigger={handleSubmit}>
 
         </SubmitBtn>
         </View>
 
          <View style={styles.btnContainer}>
-             <SubmitBtn type='white' text={'Continue with Facebook'} icon="facebook" trigger={handleSubmit}>
+             <SubmitBtn  isActive={isActive} type='white' text={'Continue with Facebook'} icon="facebook" trigger={handleSubmit}>
 
         </SubmitBtn>
         </View>
         
          <View style={styles.btnContainer}>
-             <SubmitBtn type='white' text={'Continue with Apple'} icon="apple" trigger={handleSubmit}>
+             <SubmitBtn isActive={isActive} type='white' text={'Continue with Apple'} icon="apple" trigger={handleSubmit}>
 
         </SubmitBtn>
         </View>

@@ -18,7 +18,7 @@ const Layout = () => {
       />
 
 <Stack.Screen
-        name="screen-2"
+        name="address"
         options={{
           headerShown: false,
           headerStyle: {
@@ -28,7 +28,7 @@ const Layout = () => {
       />
 
 <Stack.Screen
-      name="screen-3"
+      name="description"
         options={{
           headerShown: false,
           headerStyle: {
@@ -39,7 +39,7 @@ const Layout = () => {
 
       
 <Stack.Screen
-           name="screen-4"
+           name="photo"
         options={{
           headerShown: false,
           headerStyle: {
@@ -50,18 +50,21 @@ const Layout = () => {
 
 
 
-<Stack.Screen
-           name="screen-5"
-        options={{
-          headerShown: false,
-          headerStyle: {
-            backgroundColor: 'white',
-          },
-        }}
-      />
+
 
       <Stack.Screen
-           name="screen-6"
+           name="contact"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
+
+
+       <Stack.Screen
+           name="website"
         options={{
           headerShown: false,
           headerStyle: {
@@ -71,7 +74,26 @@ const Layout = () => {
       />
 
         <Stack.Screen
-           name="screen-7"
+           name="operation"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
+  <Stack.Screen
+           name="social"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
+
+       <Stack.Screen
+           name="name"
         options={{
           headerShown: false,
           headerStyle: {

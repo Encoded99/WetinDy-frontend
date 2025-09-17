@@ -1,21 +1,61 @@
 import { View, Text,StyleSheet,Dimensions } from 'react-native'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,InputField } from '@/components/Element'
+import { SubmitBtn,InputField,InputType } from '@/components/Element'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { RFValue } from 'react-native-responsive-fontsize'
-
+import { useBusiness } from '@/store/business'
+import { useRouter } from 'expo-router'
 
 const {width}=Dimensions.get('window')
 
 
 const index = () => {
 
-
+  const router=useRouter()
+  const {business,setBusiness}=useBusiness()
+  const [isSubmitClicked,setIsSubmitClicked]= useState<boolean>(false)
+  const [isActive,setIsActive]=useState<boolean>(false)
+ 
 const handleSubmit=()=>{
+  setIsSubmitClicked(true)
+
+   if (!isActive) return
+ router.push('/(tabs)/(create)/(category)')
 
 }
+
+
+
+
+
+
+
+
+const params:InputType={
+ label:'Name',
+  text:business.name,
+  setText:(value:string)=>setBusiness({...business,name:value}), 
+   isSubmitClicked, 
+   type:"text",
+   instance:'registeration'
+    }
+
+
+
+useEffect(()=>{
+
+if (business.name.length>3){
+  setIsActive(true)
+}
+
+else{
+  setIsActive(false)
+}
+   
+},[business.name])
+
 
 
   return (
@@ -23,7 +63,7 @@ const handleSubmit=()=>{
    <LightHeader text={'List Business'}/>
 
 
- <InputField label="Business Name"/>
+ <InputField {...params}/>
 
 
  <View style={styles.contentContainer}>
@@ -46,7 +86,7 @@ const handleSubmit=()=>{
   </View>
 
 <View style={styles.btnContainer}>
-  <SubmitBtn type='normal' trigger={handleSubmit} text='Continue' />
+  <SubmitBtn  isActive={isActive} type='normal' trigger={handleSubmit} text='Continue' />
 </View>
 
 

@@ -1,6 +1,7 @@
-import { View, FlatList,StyleSheet,Dimensions,ActivityIndicator } from 'react-native'
-import React,{useState, useEffect} from 'react'
+import { View,FlatList,StyleSheet,Dimensions, ActivityIndicator } from 'react-native'
+import React,{useState,useEffect} from 'react'
 import { CategoryType, } from '@/store/business'
+
 import { useGlobal } from '@/app/context'
 import { primary } from '@/custom'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -8,10 +9,10 @@ import { apiUrl,api } from '@/functions/axios'
 import { ErrorComponent } from '@/components/Error'
 import { Paths } from '@/data/paths'
 import { SearchField, } from '@/components/Element'
-import { useLocalSearchParams, } from 'expo-router'
+import { CategoryRenderItem } from '@/components/category'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader } from '@/components/Header'
-import { CategoryRenderItem } from '@/components/category'
+
 
 
 
@@ -28,6 +29,7 @@ const {height}=Dimensions.get('window')
 
 
  
+
 
 
 
@@ -55,41 +57,44 @@ type PaginatedResponse = {
 
 export const CategoryPicker=()=>{
 
- const {id}=useLocalSearchParams()
        const {textColor,}= useGlobal()
       const [text,setText]=useState<string>('')
     const [searchData,setSearchData]=useState<CategoryType[]>([])
       const [currentPage,setCurrentPage]=useState<number>(1)
+  const parent=''
       
  
 
+ 
   const handleSearch=async()=>{
- let resultText = text.replace(/\s+/g, "");
-  const foundData= cleanedData.filter((item)=>item.name.toUpperCase().includes(resultText.toUpperCase()))
- 
-  if (foundData.length>0){
- 
-   setSearchData(foundData)
-   return
-  }
- 
- 
-  try{
- 
-    const url = `${apiUrl}/categories/search-categories?query=${encodeURIComponent(text)}&parent=${id}`;
-    const response = await api.get(url);
- 
-    setSearchData(response.data)
-  }
- 
-  catch(err){
- 
-  }
-   
-    
+
   
-   }
+let resultText = text.replace(/\s+/g, "");
+ const foundData= cleanedData.filter((item)=>item.name.toUpperCase().includes(resultText.toUpperCase()))
+
+ if (foundData.length>0){
+
+  setSearchData(foundData)
+  return
+ }
+
+
+ try{
+
+  const url = `${apiUrl}/categories/search-categories?query=${encodeURIComponent(text)}&parent=${parent}`;
+
+   const response = await api.get(url);
+
+   setSearchData(response.data)
+ }
+
+ catch(err:any){
+   
+ }
+  
+   
  
+  }
 
 
 const fetchData = async ({
@@ -101,35 +106,13 @@ const fetchData = async ({
 
 }): Promise<PaginatedResponse> => {
 
-
-
-if (typeof(id)==='string' && id){
-
-
-
-
-
-
-  const subCategoryUrl=`${apiUrl}/categories/get-sub-categories/${id}?page=${pageParam}`
-    const response = await api.get(subCategoryUrl);
-  setCurrentPage((prev)=>prev+1)
-
- 
-  return response.data;
-
-
-}
- else{
-
-   const mainUrl=`${apiUrl}/categories/get-categories/?page=${pageParam}`
+const mainUrl=`${apiUrl}/categories/get-categories/?page=${pageParam}`
 
     const response = await api.get(mainUrl);
   setCurrentPage((prev)=>prev+1)
 
  
   return response.data;
-
- }
 
 
 
@@ -151,7 +134,7 @@ const {
   isError:isServerError,
   refetch,
 } = useInfiniteQuery<PaginatedResponse, Error>({
-  queryKey: ['sub-category-data',id ],
+  queryKey: ['category-data', ],
   queryFn: ({ pageParam = 1 }) =>
     fetchData({
       pageParam:pageParam as number,
@@ -161,21 +144,23 @@ const {
     lastPage.hasMore ? lastPage.page + 1 : undefined,
   initialPageParam: 1,
   staleTime: 1000 * 60 * 5,
-  
+ 
 });
 
 
 const handleCancel=()=>{
     setText('')
-   
+ 
   
   }
 
-  useEffect(()=>{
- 
+useEffect(()=>{
+
     if (text){
-  handleSearch()
+ handleSearch()
     }
+  
+    
   },[text])
 
 
@@ -208,9 +193,15 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
        <View style={styles.categoryHeader}>
          <SearchField  {...params}/>
       </View>
+
+   
+   
+    
+
+    
       <FlatList
          keyExtractor={(item, index) => item._id.toString()}
-           data={text===''?cleanedData:searchData}
+        data={text===''?cleanedData:searchData}
        renderItem={({ item }) => (
     <CategoryRenderItem item={item} textColor={textColor}  
     />
@@ -308,6 +299,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
 const styles= StyleSheet.create({
+  
 
 
 categoryHeader:{
@@ -316,6 +308,8 @@ categoryHeader:{
 
      
   },
+
+  
 
 
 

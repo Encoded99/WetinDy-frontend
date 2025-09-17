@@ -1,12 +1,12 @@
-import { Text,StyleSheet,Dimensions, TouchableOpacity,} from 'react-native'
+import { Text,StyleSheet,Dimensions, TouchableOpacity,View} from 'react-native'
 import React from 'react'
 import { CategoryType, } from '@/store/business'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useGlobal } from '@/app/context'
 import { percentagePadding } from './Element'
-import { useLocalSearchParams, useRouter } from 'expo-router'
-import { useBusiness } from '@/store/business'
-
+import {  useRouter } from 'expo-router'
+import { useCategory,useBusiness } from '@/store/business'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 
 
@@ -20,10 +20,10 @@ const {height}=Dimensions.get('window')
 
 
 
-  export const CategoryRenderItem=({item,textColor}:{item:CategoryType,textColor:string})=>{
+  export const CategoryRenderItem=({item,textColor,}:{item:CategoryType,textColor:string})=>{
    const {greyText}=useGlobal()
-   const {business,setSelectedCategory,selectedCategory,categoryInstance,setSelectedCategoryData}=useBusiness()
-  const {catId}=useLocalSearchParams()
+   const {categoryInstance,setSelectedCategoryData,selectedCategoryData,}=useCategory()
+  const {setBusiness,business}=useBusiness()
   const router=useRouter()
  
 
@@ -33,39 +33,58 @@ const {height}=Dimensions.get('window')
 
 
 
+if (item.subcategories.length===0){
 
-if (selectedCategory.subcategories.length!==0){
+
+
+
+
   switch(categoryInstance){
+
+
+
     case  'category-2':
-  business.categories.categoryTwo=item._id
+
+
+  setBusiness({categories:{...business.categories,categoryTwo:item._id}})
       break;
     case 'category-3':
-       business.categories.categoryThree=item._id
+       setBusiness({categories:{...business.categories,categoryThree:item._id}})
       break;
     default :
-       business.categories.categoryOne=item._id
+
+
+       setBusiness({categories:{...business.categories,categoryOne:item._id}})
+          
+
       break;
   }
 
 
-  setSelectedCategoryData(item)
-  router.push('/(tabs)/(create)/screen-4')
+
+
+  
+
+
+  const filteredSelected= selectedCategoryData.filter((item)=>item.instance!==categoryInstance)
+
+ const object={...item,instance:categoryInstance}
+ setSelectedCategoryData([...filteredSelected,object])
+
+
+
+
+
+  router.push('/(tabs)/(create)/(category)')
 }
 
 else{
 
-  setSelectedCategory(item)
+
  
  router.push(`/(tabs)/(create)/(category)/${item._id}`)
    
-
 }
-
-   
-  
- 
- 
- 
  }
  
  
@@ -74,7 +93,18 @@ else{
         <TouchableOpacity style={[styles.categoryLine,{borderBottomColor:greyText}]}
         onPress={handlePress}
         >
-       <Text style={[styles.lineText, { color: textColor }]}>{item.name}</Text>
+         
+
+          <View style={styles.textContainer}>
+            <Text
+       numberOfLines={1}
+       
+       style={[styles.lineText, { color: textColor }]}>{item.name}</Text>
+          </View>
+      <View style={{width:"15%",height:"100%",justifyContent:"center",alignItems:"center"}}>
+       <MaterialCommunityIcons size={RFValue(30)} color={textColor} name='chevron-right'/>
+      </View>
+      
      </TouchableOpacity>
        
        </>
@@ -106,7 +136,10 @@ const styles= StyleSheet.create({
    width:"100%",
    paddingHorizontal:percentagePadding,
    borderBottomWidth:1,
-   justifyContent:"center",
+   justifyContent:"space-between",
+   flexDirection:'row',
+   alignItems:'center',
+   height:RFValue(70)
  
  
   },
@@ -117,6 +150,15 @@ const styles= StyleSheet.create({
    minHeight:30,
      
   },
+
+  textContainer:{
+    width:'85%',
+    height:'100%',
+    justifyContent:"center",
+    alignItems:"flex-start",
+
+  },
+
 
 
 categoryHeader:{

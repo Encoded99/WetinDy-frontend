@@ -2,7 +2,8 @@ import { View, Text,StyleSheet } from 'react-native'
 import React from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,InputField,wantedHeight } from '@/components/Element'
+import { Slogan,SubmitBtn,InputField,wantedHeight,ButtonWithSkip } from '@/components/Element'
+import { RFValue } from 'react-native-responsive-fontsize'
 
 const index = () => {
 
@@ -12,26 +13,25 @@ const handleSubmit=()=>{
 }
 
 
+const params={
+  skipFunction:handleSubmit,
+  continueFunction:handleSubmit,
+}
+
   return (
     <InnerLayOut>
    <LightHeader text={'List Business'}/>
-   <ColoredHeader text='What is the business address?' type='black'/>
- <Slogan  text={'What is the business address?'}/>
+   <ColoredHeader text='Does Tony Enterprise have a business website?' type='black'/>
+ <Slogan  text={'Add a website for others user to learn more about the business'}/>
 
 
 
 <View style={styles.inputContainer}>
- <InputField label="Street address"/>
-</View>
-
-<View style={styles.inputContainer}>
- <InputField label="City"/>
+ <InputField label="Website Link"/>
 </View>
 
 
-<View  style={styles.smallInput}>
 
-</View>
 
 
  <View style={styles.contentContainer}>
@@ -43,7 +43,7 @@ const handleSubmit=()=>{
 
 
 <View style={styles.btnContainer}>
-  <SubmitBtn type='normal' trigger={handleSubmit} text='Continue' />
+  <ButtonWithSkip {...params}/>
 </View>
 
 
@@ -70,7 +70,7 @@ const styles=StyleSheet.create({
    },
    inputContainer:{
     width:"100%",
-    marginVertical:10
+    marginVertical:RFValue(30)
    },
    smallInput:{
     width:'100%',

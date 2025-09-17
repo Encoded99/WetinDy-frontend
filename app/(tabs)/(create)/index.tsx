@@ -3,11 +3,29 @@ import React from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
 import { Slogan,SubmitBtn } from '@/components/Element'
+import { useBusiness } from '@/store/business'
+import { useRouter } from 'expo-router'
 
 const index = () => {
+  const router=useRouter()
+const {setBusiness}=useBusiness()
+const isActive=true
+const handleSubmit=(param:'owner'|'other')=>{
+
+if (param==='owner'){
+  setBusiness({isPostedByOwner:true})
+}
+
+else{
+  setBusiness({isPostedByOwner:false})
+
+}
 
 
-const handleSubmit=()=>{
+router.push('/(tabs)/(create)/name')
+
+
+
 
 }
 
@@ -22,11 +40,11 @@ const handleSubmit=()=>{
 
 
 <View style={styles.btnContainer}>
-  <SubmitBtn type='normal' trigger={handleSubmit} text='Register for Myself' />
+  <SubmitBtn isActive={isActive} type='normal' trigger={()=>handleSubmit('owner')} text='Register for Myself' />
 </View>
 
 <View style={styles.btnContainer}>
-  <SubmitBtn type='white' trigger={handleSubmit} text='Register for Someone Else' />
+  <SubmitBtn isActive={isActive}  type='white' trigger={()=>handleSubmit('other')} text='Register for Someone Else' />
 </View>
 
 

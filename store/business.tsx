@@ -1,13 +1,32 @@
 import {create} from 'zustand'
 
+type DaysType = 
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday';
 
 
-
-interface DayInfo{
+export interface DayInfo{
+  name:DaysType,
   isOpen:boolean,
   openTime:string| null,
   closeTime:string|null,
 }
+
+
+const initialDays:DayInfo[]=[
+  { name: 'Monday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+  { name: 'Tuesday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+  { name: 'Wednesday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+  { name: 'Thursday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+  { name: 'Friday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+  { name: 'Saturday', isOpen: false, openTime: null, closeTime: null },
+  { name: 'Sunday', isOpen: false, openTime: null, closeTime: null }
+];
 
 
 
@@ -49,16 +68,7 @@ type BusinessType={
     categoryTwo?:string,
     categoryThree?:string,
   },
-  operatingDays:{
-    monday:DayInfo,
-    tuesday:DayInfo,
-    wednesday:DayInfo,
-    thursday:DayInfo,
-    friday:DayInfo,
-    saturday:DayInfo,
-    sunday:DayInfo
-
-  },
+  operatingDays:DayInfo[],
 
   image:ImageType[],
 
@@ -69,19 +79,10 @@ type BusinessType={
     postalCode:string
   }
   showFullAddress:boolean,
+  firstPoster:string,
+isPostedByOwner:boolean,
 
 }
-const openDay={
-    isOpen:true,
-    openTime:'',
-    closeTime:''
-  }
-
-  const closeDay={
-    isOpen:false,
-    openTime:'',
-    closeTime:''
-  }
 
 
 
@@ -111,15 +112,8 @@ const initialBusiness={
     categoryTwo:'',
     categoryThree:'',
   },
- operatingDays:{
-    monday:openDay,
-    tuesday:openDay,
-    wednesday:openDay,
-    thursday:openDay,
-    friday:openDay,
-    saturday:closeDay,
-    sunday:closeDay,
-  },
+
+ operatingDays:initialDays,
   address:{
     street:"",
     city:'',
@@ -128,28 +122,33 @@ const initialBusiness={
   },
   showFullAddress:true,
   image:[],
+  firstPoster:'',
+  isPostedByOwner:true
 
   
 }
 
 export type CategoryInstanceType='category-1'|'category-2'|'category-3'
 
+type InstanceType={
+  instance:CategoryInstanceType
+}
+
+
+
+
+type SelectedCategoryType= CategoryType & InstanceType
+
+
 
 export type UseBusinessType={
   business:BusinessType,
   setBusiness:(value:Partial<BusinessType>)=>void,
   
-categoryData:CategoryType[],
-setCategoryData:(value:CategoryType[])=>void,
- categoryInstance:CategoryInstanceType,
- setCategoryInstance:(value:Partial<CategoryInstanceType>)=>void,
- selectedCategory:CategoryType,
- setSelectedCategory:(value:CategoryType)=>void,
-selectedCategoryData:CategoryType[],
-setSelectedCategoryData:(value:CategoryType)=>void,
+
+
   
 }
-
 
 
 
@@ -158,16 +157,34 @@ export const useBusiness=create<UseBusinessType>((set)=>({
 
   business:initialBusiness,
   setBusiness:(value)=>set((state)=>({business:{...state.business,...value}})),
-   categoryData:[],
-   setCategoryData:(value)=>set({categoryData:value}),
-   categoryInstance:'category-1',
-   setCategoryInstance:(value)=>set({categoryInstance:value}),
-   selectedCategory:initialCategory,
-   setSelectedCategory:(value)=>set({selectedCategory:value}),
-   selectedCategoryData:[],
-   setSelectedCategoryData:(value)=>set((state)=>({selectedCategoryData:{...state.selectedCategoryData,value}}))
+ 
+  
 
 
 }))
+
+
+
+type UseCategoryType={
+categoryData:CategoryType[],
+setCategoryData:(value:CategoryType[])=>void,
+ categoryInstance:CategoryInstanceType,
+ setCategoryInstance:(value:Partial<CategoryInstanceType>)=>void,
+  selectedCategoryData:SelectedCategoryType[],
+  setSelectedCategoryData:(value:SelectedCategoryType[])=>void
+}
+
+
+export const useCategory=create<UseCategoryType>((set)=>(
+  {
+    categoryData:[],
+   setCategoryData:(value)=>set({categoryData:value}),
+   categoryInstance:'category-1',
+   setCategoryInstance:(value)=>set({categoryInstance:value}),
+ 
+   selectedCategoryData:[],
+   setSelectedCategoryData:(value)=>set({selectedCategoryData:value}) 
+  }
+))
 
 

@@ -16,7 +16,15 @@ const Layout = () => {
           },
         }}
       />
-
+<Stack.Screen
+        name="main"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
 
 
         <Stack.Screen

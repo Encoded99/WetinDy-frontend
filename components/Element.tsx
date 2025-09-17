@@ -1,6 +1,6 @@
 
 import { StyleSheet, TouchableOpacity,Text,View,TextInput,Modal,FlatList,Dimensions, Pressable} from 'react-native';
-import { primary } from '@/custom';
+import { primary,lightPrimary } from '@/custom';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useGlobal } from '@/app/context';
@@ -10,7 +10,7 @@ import { title } from '@/custom';
 import country from '../data/countries_with_flags.json'
 import { useRegister } from '@/store/auth';
 import { useRouter } from 'expo-router';
-import { CategoryInstanceType, useBusiness } from '@/store/business';
+import { CategoryInstanceType, useBusiness,useCategory } from '@/store/business';
 
 
 
@@ -23,20 +23,31 @@ type IconComponentType = ComponentProps<typeof MaterialCommunityIcons>["name"];
 
 
 
-export const SubmitBtn=({text,trigger,type,icon}:{text:string,trigger:()=>void,type:"normal"|"white",icon?:IconComponentType})=>{
+export const SubmitBtn=({text,trigger,type,icon,isActive}:{text:string,trigger:()=>void,type:"normal"|"white",icon?:IconComponentType,isActive:boolean})=>{
 const {background}= useGlobal()
 
   const btnColor=type==='normal'?'white' : 'black'
   const btnBackGround=type==='normal'?primary:background
 
+  const handlePress=()=>{
+    
+    trigger()
+  }
 
 
   return (
     <>
 
-    <TouchableOpacity style={[styles.submitBtn,{backgroundColor:btnBackGround,}]} onPress={trigger}>
-
-      <MaterialCommunityIcons size={RFValue(20)} color={btnColor} name={icon}/>
+    <TouchableOpacity style={[styles.submitBtn,{backgroundColor:isActive? btnBackGround:lightPrimary,borderColor:isActive?primary:lightPrimary}]} onPress={handlePress}>
+         
+         {
+          icon && (
+            <>
+             <MaterialCommunityIcons size={RFValue(20)} color={btnColor} name={icon}/>
+            </>
+          )
+         }
+     
           <Text style={[styles.btnText,{color:btnColor}]}>
             {text}
           </Text>
@@ -65,7 +76,7 @@ export type InputType={
   label:string,
   text:string,
   setText:(value:string)=>void,
-  icon:IconComponentType,
+  icon?:IconComponentType,
  isSubmitClicked:boolean,
  type:"email"|"password"|"text"|"telephone",
  instance:"registeration"|"normal"
@@ -115,8 +126,11 @@ export const InputField=React.memo((params:InputType)=>{
           )
         }
 
-
-      {
+{
+  icon && (
+    <>
+    
+     {
                  type!=='password' ? (
           <>
          <MaterialCommunityIcons style={styles.inputLogo} size={RFValue(25)} color={textColor}  name={icon}/>  
@@ -129,6 +143,11 @@ export const InputField=React.memo((params:InputType)=>{
       }
 
 
+    
+    </>
+  )
+}
+     
 
     
       
@@ -179,6 +198,52 @@ Allowed special characters are: @, $, !, %, *, ?, &, and .</Text>
     </>
   )
 })
+
+
+
+export const SmallInputField=React.memo((params:InputType)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {text,label,setText,icon,type,isSubmitClicked,}=params
+  
+
+ 
+
+  return(
+    <>
+
+    <View style={styles.smallInputContainer}>
+      <Text numberOfLines={1} style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
+     
+
+       
+
+         <TextInput style={[styles.textInput,{borderColor:greyText,color:textColor}]}
+           value={text}
+           onChangeText={(value)=>{setText(value);}}/> 
+
+    
+      
+
+     
+      
+   
+
+        {
+               isSubmitClicked && text==='' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>This field can not be empty</Text>
+       </View>
+                </>
+               )
+            }
+
+    </View>
+    </>
+  )
+})
+
 
 
 
@@ -339,7 +404,7 @@ const selectorParams={
 
 
         </View>
-           <TextInput style={[styles.smallTextInput,{borderColor:greyText}]}
+           <TextInput style={[styles.midTextInput,{borderColor:greyText}]}
            value={text}
            keyboardType="numeric" 
            onChangeText={(value)=>{setText(value);}}/> 
@@ -361,6 +426,8 @@ const selectorParams={
     </>
   )
 })
+
+
 
 
 
@@ -562,13 +629,6 @@ export const SearchSelectField=React.memo((params:SearchSelectFieldType)=>{
 
 
 
-interface SearchFieldType{
-
-  text:string,
-  setText:Dispatch<SetStateAction<string>>;
-  handleCancel:()=>void,
-}
-
 
 
 
@@ -576,17 +636,18 @@ interface SearchFieldType{
 
 export const DropDown=React.memo(({label,value}:{label:string,value:CategoryInstanceType})=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {setCategoryInstance}=useBusiness()
+  const {setCategoryInstance,selectedCategoryData}=useCategory()
   const router= useRouter()
 
-
+  const isInstanceSelected= selectedCategoryData.find((item)=>item.instance===value)
   
 const handleClick=()=>{
 
-console.log(value,'paramssssss')
+ 
+
 
 setCategoryInstance(value)
- router.push('/(tabs)/(create)/(category)')
+ router.push('/(tabs)/(create)/(category)/main')
 }
 
 
@@ -600,7 +661,7 @@ setCategoryInstance(value)
        <TouchableOpacity style={[styles.dropDownFieldContainer,{borderColor:greyText}]}
        onPress={handleClick}
        >
-        <Text style={{color:darkGreyText,fontSize:RFValue(14),fontFamily:'Poppins-Regular'}}>e.g Food</Text>
+        <Text style={{color:isInstanceSelected?textColor:darkGreyText,fontSize:RFValue(14),fontFamily:'Poppins-Regular'}}> {!isInstanceSelected?'e.g Food':isInstanceSelected.name}</Text>
 
         <MaterialCommunityIcons name='chevron-right' size={RFValue(30)} color={textColor}/>
 
@@ -611,6 +672,14 @@ setCategoryInstance(value)
 })
 
 
+interface SearchFieldType{
+
+  text:string,
+  setText:Dispatch<SetStateAction<string>>;
+  handleCancel:()=>void,
+  handleSearch:()=>void
+}
+
 
 
 
@@ -618,7 +687,7 @@ setCategoryInstance(value)
 
 export const SearchField=React.memo((params:SearchFieldType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,setText,handleCancel}=params
+  const {text,setText,handleCancel,handleSearch}=params
   
   
 
@@ -635,16 +704,9 @@ export const SearchField=React.memo((params:SearchFieldType)=>{
          placeholder='Find Category'
            /> 
 
-           {
-              !text && (
-                <>
-                 <MaterialCommunityIcons style={styles.searchLogo} size={RFValue(25)} color={textColor}  name={'magnify'}
-                 onPress={handleCancel}
+           <MaterialCommunityIcons style={styles.searchLogo} size={RFValue(25)} color={textColor}  name={'magnify'}
+                 onPress={handleSearch}
                  />
-                </>
-              )
-             }
-
  
              
              {
@@ -740,8 +802,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     flexDirection:"row",
     borderWidth:2,
-    borderColor:primary
-
+   
   },
 
  whiteBtn:{
@@ -785,6 +846,11 @@ const styles = StyleSheet.create({
     paddingHorizontal:percentagePadding,
    
   },
+   smallInputContainer:{
+    width:'50%',
+    paddingHorizontal:percentagePadding,
+   
+  },
   inputLabel:{
     fontSize:RFValue(14),
     marginBottom:10,
@@ -801,6 +867,8 @@ const styles = StyleSheet.create({
   
        
   },
+
+ 
 
    imageContainer:{
     width:"100%",
@@ -845,7 +913,8 @@ const styles = StyleSheet.create({
       alignItems:'center',
 
   },
-  smallTextInput:{
+  
+   midTextInput:{
     width:"63%",
     borderRadius:6,
     borderWidth:2,

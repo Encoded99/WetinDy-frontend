@@ -84,3 +84,8 @@ export const useAuth=create<UseAuthType>((set)=>({
   isError:false,
    setIsError:(value)=>set({isError:value})
 }))
+
+
+
+
+
