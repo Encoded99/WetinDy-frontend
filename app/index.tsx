@@ -26,7 +26,7 @@ useEffect(()=>{
 const t=setTimeout(() => {
 //  router.push('/(auth)/(sign-in)/otp')
 //router.push('/(tabs)/(create)/name')
- router.push('/(tabs)/(create)/operation')
+ router.push('/(tabs)/(create)/photo')
  // router.push('/(tabs)/(create)')
 // router.push('/(tabs)/(create)/68c80d77a278c694034ed7f2')
 }, (500));

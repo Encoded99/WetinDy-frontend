@@ -2,13 +2,22 @@ import { View, Text,StyleSheet } from 'react-native'
 import React from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,InputField,wantedHeight,ButtonWithSkip } from '@/components/Element'
+import { Slogan,wantedHeight,ButtonWithSkip,DescriptionField } from '@/components/Element'
 import { RFValue } from 'react-native-responsive-fontsize'
+import { useBusiness } from '@/store/business'
+import { useRouter } from 'expo-router'
+
+
+
+
+
 
 const index = () => {
-
-
+const {business,setBusiness}=useBusiness()
+const router=useRouter()
 const handleSubmit=()=>{
+
+ router.push('/(tabs)/(create)/website')
 
 }
 
@@ -21,13 +30,13 @@ const params={
   return (
     <InnerLayOut>
    <LightHeader text={'List Business'}/>
-   <ColoredHeader text='Does Tony Enterprise have a business website?' type='black'/>
- <Slogan  text={'Add a website for others user to learn more about the business'}/>
+   <ColoredHeader text='Add a brief description of the business.' type='black'/>
+ <Slogan  text={'Add a brief description of your business and what makes it unique.'}/>
 
 
 
 <View style={styles.inputContainer}>
- <InputField label="Website Link"/>
+ <DescriptionField setText={(value)=>setBusiness({...business,description:value})}     text={business.description} placeholder="Tell customers what’s special about your business and why people should choose you"/>
 </View>
 
 

@@ -81,6 +81,7 @@ type BusinessType={
   showFullAddress:boolean,
   firstPoster:string,
 isPostedByOwner:boolean,
+website:string
 
 }
 
@@ -123,8 +124,8 @@ const initialBusiness={
   showFullAddress:true,
   image:[],
   firstPoster:'',
-  isPostedByOwner:true
-
+  isPostedByOwner:true,
+  website:''
   
 }
 
@@ -144,8 +145,8 @@ type SelectedCategoryType= CategoryType & InstanceType
 export type UseBusinessType={
   business:BusinessType,
   setBusiness:(value:Partial<BusinessType>)=>void,
-  
-
+  setBusinessOperatingTime:(value:DayInfo,indexSent:number)=>void
+ 
 
   
 }
@@ -157,7 +158,15 @@ export const useBusiness=create<UseBusinessType>((set)=>({
 
   business:initialBusiness,
   setBusiness:(value)=>set((state)=>({business:{...state.business,...value}})),
- 
+ setBusinessOperatingTime: (value: DayInfo, indexSent: number) =>
+  set((state) => ({
+    business: {
+      ...state.business,
+      operatingDays: state.business.operatingDays.map((item, index) =>
+        index === indexSent ? value : item
+      ),
+    },
+  })),
   
 
 

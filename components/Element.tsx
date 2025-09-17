@@ -199,6 +199,40 @@ Allowed special characters are: @, $, !, %, *, ?, &, and .</Text>
   )
 })
 
+type DescriptionType={
+  placeholder:string,
+  text:string,
+  setText:(value:string)=>void,
+ isSubmitClicked?:boolean,
+
+}
+
+export const DescriptionField=React.memo((params:DescriptionType)=>{
+  const {textColor,greyText,darkGreyText}= useGlobal()
+  const {text,setText,placeholder}=params
+  
+
+
+  return(
+    <>
+
+    <View style={styles.inputContainer}>
+     
+        <TextInput style={[styles.largeInput,{borderColor:greyText,color:textColor}]}
+           value={text}
+            multiline={true}
+            numberOfLines={4}
+           onChangeText={(value)=>{setText(value);}}
+            textAlignVertical='top'
+ placeholderTextColor={darkGreyText}
+   placeholder={placeholder}
+           /> 
+      </View>
+    </>
+  )
+})
+
+
 
 
 export const SmallInputField=React.memo((params:InputType)=>{
@@ -508,38 +542,32 @@ Allowed special characters are: @, $, !, %, *, ?, &, and .</Text>
 
 
 
+type ImageFieldType={
 
-export const DescriptionField=React.memo((params:InputType)=>{
+  isSubmitClicked:boolean,
+  onPick:()=>void
+}
+
+export const ImageField=React.memo((param:ImageFieldType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
+  const {isSubmitClicked,onPick} =param
+
+  
 
 
   return(
     <>
 
     <View style={styles.inputContainer}>
-      <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
-       
-
    
+       
+           <View  style={[styles.imageContainer,{borderColor:greyText,backgroundColor:greyText,}]}>
 
-           <View  style={[styles.imageContainer,{borderColor:greyText,backgroundColor:greyText}]}>
-
-            <MaterialCommunityIcons color={textColor} size={RFValue(45)} name='camera-outline'/>
+            <MaterialCommunityIcons color={textColor} size={RFValue(45)} name='camera-outline'  onPress={onPick}/>
             <Text style={{color:textColor,fontSize:RFValue(16),fontFamily:'Poppins-Regular'}}>Add Photos</Text>
            </View>
       
-        {
-               isSubmitClicked && text==='' && (
-                <>
-                 <View style={styles.emptyFieldContainer}>
-      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
-     <Text style={styles.warningText}>This field can not be empty</Text>
-       </View>
-                </>
-               )
-            }
-
+        
 
 
            
@@ -564,10 +592,10 @@ export const ButtonWithSkip=({skipFunction,continueFunction}:{skipFunction:()=>v
    
     <View style={styles.skipContainer}>
 
-       <Text style={styles.skipText}>Skip</Text>
+       <Text style={styles.skipText} onPress={skipFunction}>Skip</Text>
 
 
-       <TouchableOpacity style={styles.skipBtn}>
+       <TouchableOpacity style={styles.skipBtn} onPress={continueFunction}>
           <Text style={styles.skipBtnText}>Continue</Text>
        </TouchableOpacity>
 
@@ -846,6 +874,8 @@ const styles = StyleSheet.create({
     paddingHorizontal:percentagePadding,
    
   },
+
+   
    smallInputContainer:{
     width:'50%',
     paddingHorizontal:percentagePadding,
@@ -864,9 +894,23 @@ const styles = StyleSheet.create({
        fontSize:RFValue(16),
        fontFamily:'Poppins-Regular',
        textAlignVertical: "center", 
-  
+      
        
   },
+
+   largeInput:{
+    width:"100%",
+    borderRadius:6,
+    borderWidth:2,
+       height:wantedHeight*4,
+       padding:8,
+       fontSize:RFValue(16),
+       fontFamily:'Poppins-Regular',
+       textAlignVertical: "center", 
+      
+       
+  },
+
 
  
 
@@ -1017,7 +1061,7 @@ const styles = StyleSheet.create({
   },
   skipBtnText:{
     color:'white',
-    fontFamily:"Poppins-Regular",
+    fontFamily:"Poppins-Bold",
     fontSize:RFValue(17)
   },
 

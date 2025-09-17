@@ -14,7 +14,7 @@ const  ForgotPassword = () => {
   const [password,setPassword]=useState<string>('')
   const [secondPassword,setSecondPassword]=useState<string>('')
     const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
- 
+ const isActive=true
  const  instance="registeration"
  
  
@@ -90,7 +90,7 @@ const  ForgotPassword = () => {
        
  
    <View style={{justifyContent:"center",alignItems:"center",width:"100%",marginTop:RFValue(200)}}>
-  <SubmitBtn text='Continue' trigger={handleSubmit}  type='normal'/>
+  <SubmitBtn isActive={isActive} text='Continue' trigger={handleSubmit}  type='normal'/>
    </View>
   </AuthLayOut>
 
