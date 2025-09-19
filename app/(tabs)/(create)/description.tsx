@@ -1,8 +1,8 @@
 import { View, Text,StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,wantedHeight,ButtonWithSkip,DescriptionField } from '@/components/Element'
+import { Slogan,standardHeight,ButtonWithSkip,DescriptionField } from '@/components/Element'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useBusiness } from '@/store/business'
 import { useRouter } from 'expo-router'
@@ -14,18 +14,49 @@ import { useRouter } from 'expo-router'
 
 const index = () => {
 const {business,setBusiness}=useBusiness()
+
+const [isActive,setIsActive] =useState<boolean>(false)
+const [isSubmitClicked,setIsSubmitClicked] =useState<boolean>(false)
 const router=useRouter()
+
+
 const handleSubmit=()=>{
+
+  setIsSubmitClicked(true)
+  if (!isActive) return
+ router.push('/(tabs)/(create)/website')
+
+}
+
+const skipFunction=()=>{
+
 
  router.push('/(tabs)/(create)/website')
 
 }
 
 
+
 const params={
-  skipFunction:handleSubmit,
+  skipFunction:skipFunction,
   continueFunction:handleSubmit,
+  isActive:isActive,
 }
+
+
+useEffect(()=>{
+
+  if (business.description){
+    setIsActive(true)
+  }
+
+  else{
+    setIsActive(false)
+  }
+
+},[business.description])
+
+
 
   return (
     <InnerLayOut>
@@ -36,7 +67,7 @@ const params={
 
 
 <View style={styles.inputContainer}>
- <DescriptionField setText={(value)=>setBusiness({...business,description:value})}     text={business.description} placeholder="Tell customers what’s special about your business and why people should choose you"/>
+ <DescriptionField isSubmitClicked={isSubmitClicked}  setText={(value)=>setBusiness({...business,description:value})}     text={business.description} placeholder="Tell customers what’s special about your business and why people should choose you"/>
 </View>
 
 
@@ -83,7 +114,7 @@ const styles=StyleSheet.create({
    },
    smallInput:{
     width:'100%',
-    height:wantedHeight,
+    height:standardHeight,
     backgroundColor:'red',
      padding:'2%',
 

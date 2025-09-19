@@ -1,7 +1,7 @@
 import { View, Text,StyleSheet,ScrollView, Pressable } from 'react-native'
 import { useGlobal } from '@/app/context'
 import { RFValue } from 'react-native-responsive-fontsize'
-import { wantedHeight } from './Element'
+import { standardHeight } from './Element'
 import { primary } from '@/custom'
 
 
@@ -48,7 +48,7 @@ const styles=StyleSheet.create({
  },
  btn:{
   width:200,
-  height:wantedHeight,
+  height:standardHeight,
   borderRadius:10,
   backgroundColor:primary,
   color:'white',

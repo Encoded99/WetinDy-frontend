@@ -1,30 +1,95 @@
-import { View, StyleSheet,Text,ScrollView } from 'react-native'
+import { View, StyleSheet,ScrollView } from 'react-native'
 import React,{useEffect, useState} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,InputField,wantedHeight,SmallInputField,InputType } from '@/components/Element'
+import { Slogan,SubmitBtn,InputField,InputType } from '@/components/Element'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useBusiness } from '@/store/business'
 import OtpComponent from '@/components/ui/otp'
-
-
+import { useRouter } from 'expo-router'
+import { api,apiUrl } from '@/functions/axios'
+import { useAuth } from '@/store/auth'
+import { errorOne ,notFoundError} from '@/custom'
+import { CircleLoader } from '@/components/ui/Loader'
 
 
 
 const index = () => {
+  const router=useRouter()
+    const {setResponseMessage,setIsError,}=useAuth()
   const {business,setBusiness}=useBusiness()
   const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
    const [isActive,setIsActive]=useState<boolean>(false)
     const [isOtpShown,setIsOtpShown]=useState<boolean>(false)
+   const [isLoading,setIsLoading]=useState<boolean>(false)
 
 
-const instance="registeration"
 
-const handleSubmit=()=>{
+
+
+
+
+
+const handleSubmit=async()=>{
+
   setIsSubmitClicked(true)
-  console.log(business.email,'address')
-   console.log(business.telephone,'address')
+  if (!isActive) return
+setIsLoading(true)
+  try{
+
+
+     const data={
+    telephone:business.telephone,
+    email:business.email
+   }
+
+
+   const url=`${apiUrl}/business/check-business-contact`
+
+  await api.post(url,data)
+
+
+router.push('/(tabs)/operation')
+
+
+
+
+
+  }
+catch(err:any){
+
+   setIsError(true)
+
+
+  if (err?.response?.status==='404'){
+    setResponseMessage(notFoundError)
+    setIsLoading(false)
+    return
+  }
+
+    if (err?.response?.data){
+     
+    setResponseMessage(err?.response?.data)
+    setIsLoading(false)
+    return
+    }
+  
+    setResponseMessage(errorOne)
+
 }
+
+finally{
+  setIsLoading(false)
+}
+}
+
+
+
+
+
+
+
+
 
 
 const telParams:InputType={
@@ -82,6 +147,7 @@ checkSyntax()
   return (
      
     <InnerLayOut>
+         <CircleLoader isLoading={isLoading}/>
    {
     isOtpShown && (
       <>

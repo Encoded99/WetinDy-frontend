@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { useGlobal } from '@/app/context'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { ChevronHeader,ColoredHeader } from '@/components/Header'
@@ -12,15 +12,17 @@ import { useRouter } from 'expo-router'
 import { CircleLoader } from '@/components/ui/Loader'
 import { useAuth } from '@/store/auth'
 import { errorOne } from '@/custom'
+import { storeToken } from '@/functions/api'
 
 
 const signin = () => {
  
-  const {background,}=useGlobal()
+   
   const {setResponseMessage,setIsError}=useAuth()
-  const {loginData,setLoginData}=useLogin()
+  const {loginData,setLoginData,setIsLoggedIn}=useLogin()
    const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
   const [isLoading,setIsLoading]=useState<boolean>(false)
+  const [isActive,setIsActive]=useState<boolean>(false)
   const  instance="normal"
   const router=useRouter()
 
@@ -94,11 +96,12 @@ try{
    }
   const url=`${apiUrl}/users/log-in`
 
-  await authApi.post(url,data,{
+  const response= await authApi.post(url,data,{
         headers: { 'Content-Type': 'application/json' }},)
 
-
- alert('logged in successfully')
+await storeToken(response.data.token,response.data.refreshToken)
+setIsLoggedIn(true)
+ router.push('/(tabs)')
 
 }
 
@@ -127,6 +130,23 @@ setIsLoading(false)
 
 
 
+
+
+
+useEffect(()=>{
+ if (loginData.email && loginData.password){
+  setIsActive(true)
+ }
+ else{
+  setIsActive(false)
+ }
+},[loginData])
+
+
+
+
+
+
   return (
    
       <AuthLayOut>
@@ -138,19 +158,19 @@ setIsLoading(false)
     {
       InputArray.map((item,index)=>{
         return (
-          <>
-          <View style={{marginTop:RFValue(20)}}>
+      
+          <View style={{marginTop:RFValue(20)}} key={item._id}>
          <InputField {...item.params}/>
         </View>
           
-          </>
+   
         )
       })
     }
        <Text style={{color:primary,fontFamily:'Poppins-Bold',textAlign:'center',marginVertical:30,fontSize:RFValue(13)}}>Forgot password?</Text>
 
   <View style={{justifyContent:"center",alignItems:"center",width:"100%"}}>
- <SubmitBtn text='Continue' trigger={handleSubmit}  type='normal'/>
+ <SubmitBtn  isActive={isActive} text='Log In' trigger={handleSubmit}  type='normal'/>
   </View>
  <AccountStatus link="sign-up"/>
  

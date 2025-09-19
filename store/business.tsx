@@ -17,13 +17,12 @@ export interface DayInfo{
   closeTime:string|null,
 }
 
-
-const initialDays:DayInfo[]=[
-  { name: 'Monday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
-  { name: 'Tuesday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
-  { name: 'Wednesday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
-  { name: 'Thursday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
-  { name: 'Friday', isOpen: true, openTime: '09:00 AM', closeTime: '05:00 PM' },
+const initialDays: DayInfo[] = [
+  { name: 'Monday', isOpen: true, openTime: '9:00AM', closeTime: '5:00PM' },
+  { name: 'Tuesday', isOpen: true, openTime: '9:00AM', closeTime: '5:00PM' },
+  { name: 'Wednesday', isOpen: true, openTime: '9:00AM', closeTime: '5:00PM' },
+  { name: 'Thursday', isOpen: true, openTime: '9:00AM', closeTime: '5:00PM' },
+  { name: 'Friday', isOpen: true, openTime: '9:00AM', closeTime: '5:00PM' },
   { name: 'Saturday', isOpen: false, openTime: null, closeTime: null },
   { name: 'Sunday', isOpen: false, openTime: null, closeTime: null }
 ];
@@ -42,7 +41,7 @@ export interface CategoryType {
 
 
 
-interface ImageType{
+export interface ImageType{
 
     url:string,
     cloudId:string,
@@ -61,7 +60,7 @@ type BusinessType={
     x:string,
     instagram:string,
   },
-  isVerified:boolean,
+  
   description:string,
   categories:{
     categoryOne?:string,
@@ -81,7 +80,8 @@ type BusinessType={
   showFullAddress:boolean,
   firstPoster:string,
 isPostedByOwner:boolean,
-website:string
+website:string,
+owner?:string
 
 }
 
@@ -97,7 +97,7 @@ export const initialCategory={
    path:''
 }
 
-const initialBusiness={
+export const initialBusiness={
   name:'',
   email:'',
   telephone:'',
@@ -106,7 +106,6 @@ const initialBusiness={
     x:'',
     instagram:'',
   },
-  isVerified:false,
   description:'',
   categories:{
     categoryOne:'',

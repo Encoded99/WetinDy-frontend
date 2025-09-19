@@ -25,7 +25,6 @@ const handleSubmit=()=>{
 
   if (business.categories.categoryOne==='')return
 
-  console.log(business.categories)
 router.push('/(tabs)/(create)/address')
 }
 
@@ -87,7 +86,7 @@ React.useEffect(()=>{
   return (
     <InnerLayOut>
   
- <ScrollView  style={{width:"100%"}}>
+
 
 <LightHeader text={'List Business'}/>
    <ColoredHeader text='What kind of Business are you listing' type='black'/>
@@ -118,7 +117,7 @@ React.useEffect(()=>{
  
 
 
- </ScrollView>
+
     
    
 

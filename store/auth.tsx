@@ -51,7 +51,9 @@ type UseLoginType={
   loginData:LoginDataType,
   setLoginData:(params:Partial<LoginDataType>)=>void,
   resetEmail:string,
-  setResetEmail:(value:string)=>void
+  setResetEmail:(value:string)=>void,
+  isLoggedIn:boolean,
+  setIsLoggedIn:(value:boolean)=>void
 }
 
 
@@ -66,9 +68,27 @@ export const useLogin=create<UseLoginType>((set)=>({
   loginData:initialLoginData,
   setLoginData:(value)=>set((state)=>({loginData:{...state.loginData,...value}})),
   resetEmail:'',
- setResetEmail:(value)=>set({resetEmail:value})
+ setResetEmail:(value)=>set({resetEmail:value}),
+ isLoggedIn:false,
+ setIsLoggedIn:(value)=>set({isLoggedIn:value})
 
 }))
+
+
+
+
+type UserType={
+  _id:string,
+  firstName:string,
+  lastName:string,
+  premium:boolean,
+  isTelephoneVerified:boolean,
+  country:string,
+  image:{
+    url:string,
+  }
+}
+
 
 
 type UseAuthType={
@@ -76,13 +96,40 @@ type UseAuthType={
    setResponseMessage:(param:string)=>void,
    isError:boolean,
    setIsError:(param:boolean)=>void,
+   user:UserType,
+   setUser:(value:UserType)=>void,
+   
 }
+
+
+
+
+
+const initialUser={
+  _id:'',
+  firstName:'',
+  lastName:"",
+  premium:false,
+  isTelephoneVerified:false,
+  image:{
+    url:''
+  },
+  country:""
+  
+}
+
+
+
+
+
 
 export const useAuth=create<UseAuthType>((set)=>({
   responseMessage:'',
   setResponseMessage:(value)=>set({responseMessage:value}),
   isError:false,
-   setIsError:(value)=>set({isError:value})
+   setIsError:(value)=>set({isError:value}),
+   user:initialUser,
+   setUser:(value)=>set({user:value})
 }))
 
 

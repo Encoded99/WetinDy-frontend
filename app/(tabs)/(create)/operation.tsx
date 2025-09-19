@@ -1,4 +1,4 @@
-import { View, Text,ScrollView,StyleSheet, Pressable,FlatList } from 'react-native'
+import { View, Text,ScrollView,StyleSheet, Pressable,Dimensions} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
@@ -13,13 +13,13 @@ import { ButtonWithSkip } from '@/components/Element'
 import { useRouter } from 'expo-router'
 
 
+const {width}=Dimensions.get('window')
 
 
-
-const RenderItem=({item,index}:{item:DayInfo,index:number})=>{
+const RenderItem=({item,index,setIsActive}:{item:DayInfo,index:number,setIsActive: React.Dispatch<React.SetStateAction<boolean>>;})=>{
 
  
-  const {setBusinessOperatingTime,business,setBusiness}=useBusiness()
+  const {setBusinessOperatingTime}=useBusiness()
     const {greyText,darkGreyText,textColor}=useGlobal()
   const [isOpenSelected,setIsOpenSelected]=useState<boolean>(false)
     const [iscloseSelected,setIsCloseSelected]=useState<boolean>(false)
@@ -28,7 +28,7 @@ const RenderItem=({item,index}:{item:DayInfo,index:number})=>{
  const [closeTime,setCloseTime]=useState<string|null>(item.closeTime)
 
 const onPress=(param:'open'|'close',value:string)=>{
-
+     setIsActive(true)
 
   if (param==='open'){
      const obj= {...item,openTime:value}
@@ -72,14 +72,14 @@ const onToggle=(param:'open'|'close')=>{
 
 
 const timeMap = [
-  "12:00 AM", "12:30 AM", "1:00 AM", "1:30 AM", "2:00 AM", "2:30 AM",
-  "3:00 AM", "3:30 AM", "4:00 AM", "4:30 AM", "5:00 AM", "5:30 AM",
-  "6:00 AM", "6:30 AM", "7:00 AM", "7:30 AM", "8:00 AM", "8:30 AM",
-  "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
-  "12:00 PM", "12:30 PM", "1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM",
-  "3:00 PM", "3:30 PM", "4:00 PM", "4:30 PM", "5:00 PM", "5:30 PM",
-  "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM",
-  "9:00 PM", "9:30 PM", "10:00 PM", "10:30 PM", "11:00 PM", "11:30 PM"
+  "12:00AM", "12:30AM", "1:00AM", "1:30AM", "2:00AM", "2:30AM",
+  "3:00AM", "3:30AM", "4:00AM", "4:30AM", "5:00AM", "5:30AM",
+  "6:00AM", "6:30AM", "7:00AM", "7:30AM", "8:00AM", "8:30AM",
+  "9:00AM", "9:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM",
+  "12:00PM", "12:30PM", "1:00PM", "1:30PM", "2:00PM", "2:30PM",
+  "3:00PM", "3:30PM", "4:00PM", "4:30PM", "5:00PM", "5:30PM",
+  "6:00PM", "6:30PM", "7:00PM", "7:30PM", "8:00PM", "8:30PM",
+  "9:00PM", "9:30PM", "10:00PM", "10:30PM", "11:00PM", "11:30PM"
 ];
 
 
@@ -286,15 +286,10 @@ const operation = () => {
    const {greyText}=useGlobal()
    const {business}=useBusiness()
  const router=useRouter()
+ const [isActive,setIsActive]=useState<boolean>(false)
 
 
 
-
-const timeMap=[
-  "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
-  "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-  "12:00 PM"
-]
 
 
 
@@ -305,9 +300,18 @@ const skip=()=>{
 }
 
 const forward=()=>{
+    if (!isActive)return
+
    router.push('/(tabs)/(create)/description')
-   console.log(business.operatingDays,'operation days')
+ 
 }
+
+
+useEffect(()=>{
+
+
+
+},[])
 
 
   return (
@@ -332,9 +336,9 @@ const forward=()=>{
    business.operatingDays.map((item,index)=>{
 
     return (   
-   <>
-    <RenderItem item={item}  index={index}    key={item.name}/>
-   </>
+   
+    <RenderItem setIsActive={setIsActive} item={item}  index={index}    key={item.name}/>
+ 
 
 
       
@@ -352,7 +356,7 @@ const forward=()=>{
 
     </ScrollView>
     <View style={{borderTopColor:greyText,borderTopWidth:1,paddingVertical:10}}>
-    <ButtonWithSkip  skipFunction={skip}  continueFunction={forward} />
+    <ButtonWithSkip isActive={isActive}   skipFunction={skip}  continueFunction={forward} />
     </View>
 
    </InnerLayOut>
@@ -416,8 +420,8 @@ position:"relative",
   },
 
   dateContainer:{
-    width:'100%',
-    height:'100%',
+    width:RFValue(70),
+    height:RFValue(150),
     backgroundColor:'black',
     borderRadius:10,
     borderWidth:1,

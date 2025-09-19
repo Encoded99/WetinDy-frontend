@@ -140,7 +140,7 @@ setIsLoading(false)
     {
       InputArray.map((item,index)=>{
         return (
-          <>
+          
 
           
 
@@ -165,7 +165,7 @@ setIsLoading(false)
                     }
         </View>
           
-          </>
+        
         )
       })
     }

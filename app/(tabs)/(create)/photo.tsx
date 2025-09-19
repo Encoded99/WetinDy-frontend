@@ -2,11 +2,25 @@ import { View, StyleSheet,Image,ScrollView } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,ImageField,wantedHeight } from '@/components/Element'
+import { Slogan,SubmitBtn,ImageField,standardHeight } from '@/components/Element'
 import { useBusiness } from '@/store/business'
 import { RFValue } from 'react-native-responsive-fontsize'
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useGlobal } from '@/app/context'
+import { ImageType } from '@/store/business'
+import { apiUrl,api } from '@/functions/axios'
+import { useAuth } from '@/store/auth'
+import { errorOne } from '@/custom'
+import { CircleLoader } from '@/components/ui/Loader'
+import { CongratsResponse } from '@/components/ui/reponse'
+import { useRouter } from 'expo-router'
+import { notFoundError } from '@/custom'
+import { MultiPartAxiosConfig } from '@/functions/axios'
+import { initialBusiness } from '@/store/business'
+
+
 
 
 
@@ -14,23 +28,36 @@ import * as FileSystem from 'expo-file-system';
 
 
 const index = () => {
-  const {business}=useBusiness()
+  const {setResponseMessage,setIsError,user}=useAuth()
+ const {darkGreyText}=useGlobal()
+  const {business,setBusiness}=useBusiness()
   const [isActive,setIsActive]=useState<boolean>(false)
   const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
-const [selectedImage,setSelectedImage]=useState('')
+const [showCongrats,setShowCongrats]=useState<boolean>(false)
+const [isLoading,setIsLoading]=useState<boolean>(false)
+
+const router= useRouter()
 
 
 
 
+const  handleCongratPress=()=>{
 
 
+  setBusiness(initialBusiness)
 
+setShowCongrats(false)
+
+
+  }
+ 
 
   
  const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images, // Fix mediaTypes option
     allowsEditing: true,
+    allowsMultipleSelection:user.premium? true:false,
     aspect: [4, 3],
     quality: 1,
   });
@@ -45,9 +72,28 @@ const [selectedImage,setSelectedImage]=useState('')
     }
 
 
-    console.log(result.assets[0].uri,'uri')
+  
 
-    setSelectedImage(result.assets[0].uri); 
+
+
+
+
+
+  
+
+const imageArray= [
+  {
+    cloudId:'',
+    url:result.assets[0].uri
+  },
+   
+
+]
+
+setBusiness({image:imageArray})
+
+ 
+
   }
 };
 
@@ -82,8 +128,155 @@ const handleImagePermission=async()=>{
 
 
 
+const uploadToCloudinary=async()=>{
 
-const handleSubmit=()=>{
+  const formData = new FormData();
+
+  console.log('uplaod clouidnary')
+
+business.image.forEach((img, i) => {
+  formData.append('file', {
+    uri: img.url,
+    name: `photo_${i}.jpg`,
+    type: 'image/jpeg',
+  } as any);
+});
+
+ 
+setIsLoading(true)
+  try{
+  const url=`${apiUrl}/business/upload-cloudinary`
+  
+  
+
+
+
+    const response = await api.post(url,formData,{isMultipart:true} as MultiPartAxiosConfig);
+ 
+    
+    return response.data
+  
+   
+
+    
+
+  }
+
+  catch(err:any){
+    setResponseMessage('Error uploading Image')
+    setIsError(true)
+ console.log(err.response.data,'error resposn ima')
+    setIsLoading(false)
+   return null
+    
+
+  }
+
+  finally{
+    setIsLoading(false)
+  }
+
+
+}
+
+
+
+
+
+
+
+const handleSubmit=async()=>{
+
+
+  setIsSubmitClicked(true)
+
+  if (!isActive)return
+
+setIsLoading(true)
+
+
+
+
+
+  if (business.image.length>0){
+    const value= await uploadToCloudinary()
+
+    if (value===null){
+       throw new Error ('Error uploading image')
+    }
+
+    else{
+
+     business.image=value
+      
+    }
+  }
+
+
+
+
+
+
+  try{
+  
+  
+  
+     const url=`${apiUrl}/business/list-business`
+  
+    await api.post(url,business)
+  
+  
+   
+    setShowCongrats(true)
+  
+  
+  
+  
+    }
+  catch(err:any){
+  
+     setIsError(true)
+
+  console.log(err?.response?.data,'gotten error')
+  if (err?.response?.status===404){
+ 
+    setResponseMessage(notFoundError)
+    setIsLoading(false)
+    return
+  }
+
+
+
+      if (err?.response?.data ==='string'){
+       
+      const message =
+    typeof err.response.data === 'string'
+      ? err.response.data
+      : err.response.data.error || JSON.stringify(err.response.data);
+
+  setResponseMessage(message);
+  setIsLoading(false);
+  return;
+  
+      }
+    
+      setResponseMessage(errorOne)
+  
+  }
+  
+  finally{
+    setIsLoading(false)
+  }
+}
+
+
+
+
+const handleDelete=(param:ImageType)=>{
+
+ const resultantImage= business.image.filter((item)=>item.url!==param.url)
+
+ setBusiness({image:resultantImage})
 
 }
 
@@ -93,7 +286,13 @@ const handleSubmit=()=>{
 useEffect(()=>{
 
 
+if (business.image.length>0){
+  setIsActive(true)
+}
 
+else{
+  setIsActive(false)
+}
 
 },[business.image])
 
@@ -105,14 +304,21 @@ const params={
 
 }
 
-useEffect(()=>{
-  console.log(selectedImage,'selected-image')
-})
+
+const congratsParams={
+  showCongrats,
+  handlePress:handleCongratPress,
+  text:business.isPostedByOwner?"Thank you! This business will appear once approved.":'Thank you! This business will appear once approved. The owner can claim it later.'
+
+}
+
 
 
 
   return (
     <InnerLayOut>
+      <CongratsResponse  {...congratsParams}/>
+        <CircleLoader isLoading={isLoading}/>
    <LightHeader text={'List Business'}/>
 
 
@@ -132,27 +338,33 @@ useEffect(()=>{
 
 <View style={styles.selectedImageContainer}>
 
-  <Image source={{ uri: selectedImage[0] }}  style={styles.image}/>
-  <Image style={styles.image}/>
-  <Image style={styles.image}/>
+  {
+    business.image.map((image,index)=>{
+      return (
+     
+         <View style={styles.imageContainer} key={index}>
+     <Image source={{ uri: business.image[0].url }}  style={styles.image}
+     resizeMode='cover'
+     
+     
+     />
 
-</View>
 
-
-
-
-
-   </ScrollView>
+     <View style={[styles.eraserContainer,{backgroundColor:darkGreyText}]}>
+          <MaterialCommunityIcons color={'white'} size={RFValue(15)} name='close'
+     onPress={()=>handleDelete(image)}
+     />
+     </View>
    
+   </View>
+    
+      )
+    })
+  }
 
-
- <View style={styles.contentContainer}>
-
-
-
-
-
-
+  
+     
+</View>
 
    <View style={styles.btnContainer}>
  <SubmitBtn isActive={isActive} type='normal' trigger={handleSubmit} text='Continue' />
@@ -161,9 +373,11 @@ useEffect(()=>{
 
 
 
+   </ScrollView>
+   
 
 
- </View>
+
 
     </InnerLayOut>
 
@@ -180,6 +394,7 @@ const styles=StyleSheet.create({
    btnContainer:{
     width:'100%',
     alignItems:'center',
+    marginBottom:RFValue(20)
    },
    inputContainer:{
     width:"100%",
@@ -187,7 +402,7 @@ const styles=StyleSheet.create({
    },
    smallInput:{
     width:'100%',
-    height:wantedHeight,
+    height:standardHeight,
      padding:'2%',
 
    },
@@ -197,16 +412,32 @@ const styles=StyleSheet.create({
     width:"100%",
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between',
+    justifyContent:'center',
     height:RFValue(100),
     paddingHorizontal:'4%',
-    marginVertical:RFValue(30)
+    marginVertical:RFValue(50),
+  
+    marginHorizontal:'auto'
 
    },
    image:{
-    width:'30%',
-    backgroundColor:'red',
-    height:'100%'
+    width:'100%',
+    height:'150%'
+   },
+   imageContainer:{
+      width:'25%',
+      justifyContent:'center',
+      alignItems:'center',
+      height:RFValue(60)
+   },
+  
+   eraserContainer:{
+       marginVertical:10,
+       justifyContent:'center',
+       alignItems:'center',
+       height:RFValue(20),
+       width:RFValue(20),
+       borderRadius:RFValue(20)
    }
 
 })

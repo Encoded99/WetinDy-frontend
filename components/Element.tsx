@@ -203,13 +203,13 @@ type DescriptionType={
   placeholder:string,
   text:string,
   setText:(value:string)=>void,
- isSubmitClicked?:boolean,
+ isSubmitClicked:boolean,
 
 }
 
 export const DescriptionField=React.memo((params:DescriptionType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,setText,placeholder}=params
+  const {text,setText,placeholder,isSubmitClicked}=params
   
 
 
@@ -227,6 +227,17 @@ export const DescriptionField=React.memo((params:DescriptionType)=>{
  placeholderTextColor={darkGreyText}
    placeholder={placeholder}
            /> 
+            {
+               isSubmitClicked && text==='' && (
+                <>
+                 <View style={styles.emptyFieldContainer}>
+      <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
+     <Text style={styles.warningText}>This field can not be empty</Text>
+       </View>
+                </>
+               )
+            }
+
       </View>
     </>
   )
@@ -468,9 +479,9 @@ const selectorParams={
 
 
 export const HalfInputField=React.memo((params:InputType)=>{
-  const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
-  const [showPassword,setShowPassword]=useState<boolean>(false)
+  const {greyText,darkGreyText}= useGlobal()
+  const {text,label,setText,type,isSubmitClicked,instance}=params
+
 
   const isEmailFormat=emailRegex.test(text);
  
@@ -583,7 +594,7 @@ export const ImageField=React.memo((param:ImageFieldType)=>{
 
 
 
-export const ButtonWithSkip=({skipFunction,continueFunction}:{skipFunction:()=>void,continueFunction:()=>void})=>{
+export const ButtonWithSkip=({skipFunction,continueFunction,isActive}:{skipFunction:()=>void,continueFunction:()=>void,isActive:boolean})=>{
 
 
   return (
@@ -595,7 +606,7 @@ export const ButtonWithSkip=({skipFunction,continueFunction}:{skipFunction:()=>v
        <Text style={styles.skipText} onPress={skipFunction}>Skip</Text>
 
 
-       <TouchableOpacity style={styles.skipBtn} onPress={continueFunction}>
+       <TouchableOpacity style={[styles.skipBtn,{backgroundColor:isActive?primary:lightPrimary}]} onPress={continueFunction}>
           <Text style={styles.skipBtnText}>Continue</Text>
        </TouchableOpacity>
 
@@ -817,17 +828,18 @@ export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
   )
 }
 
-export const wantedHeight=RFValue(50)
+export const standardHeight=RFValue(50)
 export const percentagePadding='4%'
+export const standardBorderRadius=10
 
 const styles = StyleSheet.create({
   submitBtn:{
     width:"90%",
-    height:wantedHeight,
+    height:standardHeight,
     backgroundColor:primary,
     justifyContent:'center',
     alignItems:'center',
-    borderRadius:10,
+    borderRadius:standardBorderRadius,
     flexDirection:"row",
     borderWidth:2,
    
@@ -835,11 +847,11 @@ const styles = StyleSheet.create({
 
  whiteBtn:{
     width:"90%",
-    height:wantedHeight,
+    height:standardHeight,
     backgroundColor:primary,
     justifyContent:'center',
     alignItems:'center',
-    borderRadius:10,
+    borderRadius:standardBorderRadius,
     flexDirection:"row"
 
   },
@@ -889,7 +901,7 @@ const styles = StyleSheet.create({
     width:"100%",
     borderRadius:6,
     borderWidth:2,
-       height:wantedHeight,
+       height:standardHeight,
        padding:8,
        fontSize:RFValue(16),
        fontFamily:'Poppins-Regular',
@@ -900,9 +912,9 @@ const styles = StyleSheet.create({
 
    largeInput:{
     width:"100%",
-    borderRadius:6,
+    borderRadius:standardBorderRadius,
     borderWidth:2,
-       height:wantedHeight*4,
+       height:standardHeight*4,
        padding:8,
        fontSize:RFValue(16),
        fontFamily:'Poppins-Regular',
@@ -916,7 +928,7 @@ const styles = StyleSheet.create({
 
    imageContainer:{
     width:"100%",
-    borderRadius:6,
+    borderRadius:standardBorderRadius,
     borderWidth:2,
        padding:8,
        fontSize:RFValue(16),
@@ -960,9 +972,9 @@ const styles = StyleSheet.create({
   
    midTextInput:{
     width:"63%",
-    borderRadius:6,
+    borderRadius:standardBorderRadius,
     borderWidth:2,
-       height:wantedHeight,
+       height:standardHeight,
        padding:8,
        fontSize:RFValue(16),
  fontFamily:'Poppins-Regular',
@@ -973,7 +985,7 @@ const styles = StyleSheet.create({
    width:"35%",
      borderRadius:6,
     borderWidth:2,
-       height:wantedHeight,
+       height:standardHeight,
        padding:8,
        fontSize:RFValue(18),
        flexDirection:'row',
@@ -1039,7 +1051,7 @@ const styles = StyleSheet.create({
 
   skipContainer:{
     width:"100%",
-    height:wantedHeight,
+    height:standardHeight,
     flexDirection:"row",
     justifyContent:'space-between',
     alignItems:'center',
@@ -1077,7 +1089,7 @@ const styles = StyleSheet.create({
 
    searchSelectInput:{
     width:"80%",
-       height:wantedHeight,
+       height:standardHeight,
        padding:8,
        fontSize:RFValue(16),
        fontFamily:'Poppins-Regular',
@@ -1087,7 +1099,7 @@ const styles = StyleSheet.create({
   },
    searchInput:{
     width:"100%",
-       height:wantedHeight,
+       height:standardHeight,
        padding:8,
        fontSize:RFValue(16),
        fontFamily:'Poppins-Regular',
@@ -1101,15 +1113,15 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     alignItems:"center",
   
-      height:wantedHeight,
+      height:standardHeight,
    
   },
 
   dropDownFieldContainer:{
     width:'100%',
      padding:'2%',
-      borderRadius:6,
-      height:wantedHeight,
+      borderRadius:standardBorderRadius,
+      height:standardHeight,
       justifyContent:'space-between',
       alignItems:'center',
     borderWidth:2,

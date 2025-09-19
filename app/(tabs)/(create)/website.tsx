@@ -1,29 +1,107 @@
 import { View, Text,StyleSheet } from 'react-native'
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,SubmitBtn,InputField,wantedHeight,ButtonWithSkip,InputType } from '@/components/Element'
+import { Slogan,SubmitBtn,InputField,standardHeight,ButtonWithSkip,InputType } from '@/components/Element'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useRouter } from 'expo-router'
 import { useBusiness } from '@/store/business'
-
-
+import { api,apiUrl } from '@/functions/axios'
+import { errorOne ,notFoundError} from '@/custom'
+import { CircleLoader } from '@/components/ui/Loader'
+import { useAuth } from '@/store/auth'
 
 
 const index = () => {
+    const {setResponseMessage,setIsError,}=useAuth()
   const {business,setBusiness}=useBusiness()
-  const isSubmitClicked=false
+  const [isActive,setIsActive]=useState<boolean>(false)
+  const [isLoading,setIsLoading]=useState<boolean>(false)
+ const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
 const router=useRouter()
 
 
-const handleSubmit=()=>{
-    router.push('/(tabs)/(create)/photo')
+
+
+const skipFunction=()=>{
+  router.push('/(tabs)/(create)/social')
 }
 
 
+const handleSubmit=async()=>{
+
+  setIsSubmitClicked(true)
+  if (!isActive) return
+setIsLoading(true)
+  try{
+
+
+     const data={
+    website:business.website,
+   }
+
+
+   const url=`${apiUrl}/business/check-business-website`
+
+  await api.post(url,data)
+
+
+  router.push('/(tabs)/(create)/social')
+
+
+
+
+
+  }
+catch(err:any){
+
+   setIsError(true)
+
+
+  if (err?.response?.status===404){
+    setResponseMessage(notFoundError)
+    setIsLoading(false)
+    return
+  }
+
+    if (err?.response?.data){
+     
+    setResponseMessage(err?.response?.data)
+    setIsLoading(false)
+    return
+    }
+  
+    setResponseMessage(errorOne)
+
+}
+
+finally{
+  setIsLoading(false)
+}
+}
+
+
+
+
+useEffect(()=>{
+
+  if (business.website){
+    setIsActive(true)
+  }
+  else{
+    setIsActive(false)
+  }
+
+},[business.website])
+
+
+
+
+
 const params={
-  skipFunction:handleSubmit,
+  skipFunction:skipFunction,
   continueFunction:handleSubmit,
+  isActive
 }
 
 
@@ -40,8 +118,9 @@ const inputParam:InputType={
 
   return (
     <InnerLayOut>
+         <CircleLoader isLoading={isLoading}/>
    <LightHeader text={'List Business'}/>
-   <ColoredHeader text='Does Tony Enterprise have a business website?' type='black'/>
+   <ColoredHeader text={`Does  have a ${business.name} business website?` }  type='black'/>
  <Slogan  text={'Add a website for others user to learn more about the business'}/>
 
 
@@ -94,7 +173,7 @@ const styles=StyleSheet.create({
    },
    smallInput:{
     width:'100%',
-    height:wantedHeight,
+    height:standardHeight,
     backgroundColor:'red',
      padding:'2%',
 
