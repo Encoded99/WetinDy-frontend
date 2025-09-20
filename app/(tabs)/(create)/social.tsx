@@ -42,9 +42,9 @@ setIsLoading(true)
 
 
      const data={
-    x:business.social.x,
-    facebook:business.social.facebook,
-    instagram:business.social.instagram,
+    x:business?.social?.x,
+    facebook:business?.social?.facebook,
+    instagram:business?.social?.instagram,
 
    }
 
@@ -112,9 +112,9 @@ const InputArray:InputArrayType[]=[
     _id:1,
     params:{
  label:'Facebook Link',
-  text:business.social.facebook,
+  text:business?.social?.facebook ||  '',
   icon:"facebook",
-  setText:(value:string)=>setBusiness({...business,social:{...business.social,facebook:value}}), 
+  setText:(value:string)=>setBusiness({...business,social:{...business.social,facebook:value?value:undefined}}), 
    isSubmitClicked, 
    type:"text",
    instance
@@ -127,9 +127,9 @@ const InputArray:InputArrayType[]=[
     _id:2,
     params:{
  label:'X Link',
-  text:business.social.x,
+  text:business?.social?.x || '',
   icon:"alpha-x-box",
-  setText:(value:string)=>setBusiness({...business,social:{...business.social,x:value}}), 
+  setText:(value:string)=>setBusiness({...business,social:{...business.social,x:value?value:undefined}}), 
    isSubmitClicked, 
    type:"text",
    instance
@@ -141,9 +141,9 @@ const InputArray:InputArrayType[]=[
     _id:3,
     params:{
  label:'Instagram Link ',
-  text:business.social.instagram,
+  text:business?.social?.instagram || '',
   icon:"instagram",
-  setText:(value:string)=>setBusiness({...business,social:{...business.social,instagram:value}}), 
+  setText:(value:string)=>setBusiness({...business,social:{...business.social,instagram:value?value:undefined}}), 
    isSubmitClicked, 
    type:"text",
    instance
@@ -171,7 +171,7 @@ const params={
 
 useEffect(()=>{
 
-  if (business.social.facebook || business.social.x || business.social.instagram){
+  if (business?.social?.facebook || business?.social?.x || business?.social?.instagram){
     setIsActive(true)
   }
 
@@ -179,7 +179,7 @@ useEffect(()=>{
     setIsActive(false)
   }
 
-},[business.social])
+},[business?.social])
 
 
 

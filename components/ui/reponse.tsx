@@ -126,7 +126,7 @@ const styles=StyleSheet.create({
    width:'90%',
    alignSelf:'center',
    borderRadius:6,
-  minHeight:RFValue(40),
+  minHeight:RFValue(70),
    marginTop:'15%',
     shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
@@ -157,8 +157,8 @@ const styles=StyleSheet.create({
 
 
  congratsModal:{
-   width:width,
-   height:height,
+   width:'100%',
+   height:'100%',
   justifyContent:'center',
   alignItems:'center',
   paddingHorizontal:'10%'

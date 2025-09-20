@@ -52,13 +52,13 @@ export interface ImageType{
 
 type BusinessType={
   name:string,
-  email:string,
+  email?:string,
   telephone:string,
     
-  social:{
-    facebook:string,
-    x:string,
-    instagram:string,
+  social?:{
+    facebook?:string,
+    x?:string,
+    instagram?:string,
   },
   
   description:string,
@@ -80,7 +80,7 @@ type BusinessType={
   showFullAddress:boolean,
   firstPoster:string,
 isPostedByOwner:boolean,
-website:string,
+website?:string,
 owner?:string
 
 }
@@ -99,13 +99,8 @@ export const initialCategory={
 
 export const initialBusiness={
   name:'',
-  email:'',
   telephone:'',
-  social:{
-    facebook:'',
-    x:'',
-    instagram:'',
-  },
+  
   description:'',
   categories:{
     categoryOne:'',
@@ -124,7 +119,7 @@ export const initialBusiness={
   image:[],
   firstPoster:'',
   isPostedByOwner:true,
-  website:''
+ 
   
 }
 

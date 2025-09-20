@@ -108,8 +108,8 @@ const params={
 
 const inputParam:InputType={
  label:'Website link',
-  text:business.website,
-  setText:(value:string)=>setBusiness({...business,website:value}), 
+  text:business.website || '',
+  setText:(value:string)=>setBusiness({...business,website:value?value:undefined}), 
    isSubmitClicked, 
    type:"text",
    instance:'registeration'

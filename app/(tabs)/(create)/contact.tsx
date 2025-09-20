@@ -29,7 +29,6 @@ const index = () => {
 
 
 
-
 const handleSubmit=async()=>{
 
   setIsSubmitClicked(true)
@@ -57,7 +56,7 @@ router.push('/(tabs)/operation')
 
   }
 catch(err:any){
-
+  console.log(err,'error from register')
    setIsError(true)
 
 
@@ -103,11 +102,13 @@ instance:'registeration'
 
     const emailParams:InputType={
  label:'Email',
-  text:business.email,
-  setText:(value:string)=>setBusiness({...business,email:value}), 
+  text:business.email || '',
+  setText:(value:string)=>setBusiness({...business,email:value?value:undefined}), 
    isSubmitClicked, 
    type:"email",
-instance:'registeration'
+instance:'registeration',
+isOptional:true
+
     }
 
 

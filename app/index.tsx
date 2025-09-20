@@ -42,7 +42,7 @@ try{
 
   if (token){
    setIsLoggedIn(true)
-  router.push('/(tabs)/(create)/photo')
+  router.push('/(tabs)/(create)')
   }
 
   else{ 

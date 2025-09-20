@@ -9,7 +9,7 @@ import { ErrorComponent } from '@/components/Error'
 import { Paths } from '@/data/paths'
 import { SearchField, } from '@/components/Element'
 import { useLocalSearchParams, } from 'expo-router'
-import { InnerLayOut } from '@/components/LayOut'
+import { InnerLayOutWithOutScroll } from '@/components/LayOut'
 import { LightHeader } from '@/components/Header'
 import { CategoryRenderItem } from '@/components/category'
 
@@ -201,7 +201,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
      
-    <InnerLayOut>
+    <InnerLayOutWithOutScroll>
 
   
      <LightHeader text={'List Business'}/>
@@ -287,7 +287,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
 
-    </InnerLayOut>
+    </InnerLayOutWithOutScroll>
   
     </>
   )

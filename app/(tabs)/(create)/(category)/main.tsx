@@ -10,7 +10,7 @@ import { ErrorComponent } from '@/components/Error'
 import { Paths } from '@/data/paths'
 import { SearchField, } from '@/components/Element'
 import { CategoryRenderItem } from '@/components/category'
-import { InnerLayOut } from '@/components/LayOut'
+import { InnerLayOutWithOutScroll } from '@/components/LayOut'
 import { LightHeader } from '@/components/Header'
 
 
@@ -186,7 +186,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
      
-    <InnerLayOut>
+    <InnerLayOutWithOutScroll >
 
   
      <LightHeader text={'List Business'}/>
@@ -278,7 +278,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
 
-    </InnerLayOut>
+    </InnerLayOutWithOutScroll>
   
     </>
   )

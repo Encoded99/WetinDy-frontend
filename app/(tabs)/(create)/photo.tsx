@@ -132,7 +132,7 @@ const uploadToCloudinary=async()=>{
 
   const formData = new FormData();
 
-  console.log('uplaod clouidnary')
+ 
 
 business.image.forEach((img, i) => {
   formData.append('file', {
@@ -186,6 +186,7 @@ setIsLoading(true)
 
 
 const handleSubmit=async()=>{
+
 
 
   setIsSubmitClicked(true)
@@ -316,8 +317,10 @@ const congratsParams={
 
 
   return (
-    <InnerLayOut>
-      <CongratsResponse  {...congratsParams}/>
+    <>
+     <CongratsResponse  {...congratsParams}/>
+ <InnerLayOut>
+   
         <CircleLoader isLoading={isLoading}/>
    <LightHeader text={'List Business'}/>
 
@@ -381,6 +384,9 @@ const congratsParams={
 
     </InnerLayOut>
 
+
+    </>
+   
   )
 }
 

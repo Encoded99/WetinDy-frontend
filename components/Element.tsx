@@ -79,7 +79,8 @@ export type InputType={
   icon?:IconComponentType,
  isSubmitClicked:boolean,
  type:"email"|"password"|"text"|"telephone",
- instance:"registeration"|"normal"
+ instance:"registeration"|"normal",
+ isOptional?:boolean
  
 
 }
@@ -91,7 +92,7 @@ export const phoneRegex = /^\d+$/;
 
 export const InputField=React.memo((params:InputType)=>{
   const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,label,setText,icon,type,isSubmitClicked,instance}=params
+  const {text,label,setText,icon,type,isSubmitClicked,instance,isOptional}=params
   const [showPassword,setShowPassword]=useState<boolean>(false)
 
   const isEmailFormat=emailRegex.test(text);
@@ -158,7 +159,7 @@ export const InputField=React.memo((params:InputType)=>{
    
 
         {
-               isSubmitClicked && text==='' && (
+               isSubmitClicked && text==='' &&  !isOptional  && (
                 <>
                  <View style={styles.emptyFieldContainer}>
       <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
@@ -171,7 +172,7 @@ export const InputField=React.memo((params:InputType)=>{
 
 
              {
-               isSubmitClicked && type==='email' && text!=='' && !isEmailFormat &&  instance==='registeration' && (
+               isSubmitClicked && type==='email' && text!=='' && !isEmailFormat &&  instance==='registeration' &&    (
                 <>
                  <View style={styles.emptyFieldContainer}>
       <MaterialCommunityIcons color='red' size={RFValue(18)} name='alert-circle-outline'/>
