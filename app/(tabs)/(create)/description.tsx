@@ -2,11 +2,11 @@ import { View, Text,StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { Slogan,standardHeight,ButtonWithSkip,DescriptionField } from '@/components/Element'
+import { Slogan,standardHeight,ButtonWithSkip,DescriptionField, percentagePadding } from '@/components/Element'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useBusiness } from '@/store/business'
 import { useRouter } from 'expo-router'
-
+import { TextCounter } from '@/components/Element'
 
 
 
@@ -58,6 +58,21 @@ useEffect(()=>{
 
 
 
+const textCounterProps={
+  text:business.description,
+  maxLength:450,
+   onExceed:()=>setIsActive(false),
+ onValid:()=>setIsActive(true)
+}
+
+
+
+
+
+
+
+
+
   return (
     <InnerLayOut>
    <LightHeader text={'List Business'}/>
@@ -70,6 +85,10 @@ useEffect(()=>{
  <DescriptionField isSubmitClicked={isSubmitClicked}  setText={(value)=>setBusiness({...business,description:value})}     text={business.description} placeholder="Tell customers what’s special about your business and why people should choose you"/>
 </View>
 
+<View style={{width:"100%",paddingHorizontal:percentagePadding}}>
+<TextCounter {...textCounterProps}/>
+ 
+</View>
 
 
 

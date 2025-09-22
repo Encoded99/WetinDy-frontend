@@ -8,6 +8,7 @@ import { primary } from "@/custom";
 import { percentagePadding } from "./Element";
 
 
+
 export const ChevronHeader=()=>{
 const {textColor}=useGlobal()
 const router=useRouter()
@@ -98,10 +99,13 @@ const styles= StyleSheet.create({
  },
 
   coloredHeader:{
-    width:'100%',
+   
     flexDirection:'row',
     justifyContent:'flex-start',
-    paddingLeft:percentagePadding
+  
+  
+
+  
   },
 
  coloredHeaderText:{
@@ -119,8 +123,8 @@ const styles= StyleSheet.create({
     width:'100%',
     flexDirection:'row',
    alignItems:"center",
-  marginVertical:20,
-
+  justifyContent:'flex-start'
+ 
   },
 
   lightHeaderText:{

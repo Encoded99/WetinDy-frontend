@@ -17,6 +17,26 @@ const Layout = () => {
         }}
       />
 
+       <Stack.Screen
+                 name="[id]"
+              options={{
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor: 'white',
+                },
+              }}
+            />
+
+             <Stack.Screen
+                 name="(discover)/[id]"
+              options={{
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor: 'white',
+                },
+              }}
+            />
+
     </Stack>
   );
 }

@@ -58,14 +58,14 @@ router.push('/(tabs)/(create)/name')
 const styles=StyleSheet.create({
    contentContainer:{
     flex:1,
-    padding:'2%',
     justifyContent:'flex-end',
-
+    
    },
    btnContainer:{
     width:'100%',
     alignItems:'center',
     marginTop:20,
+    marginBottom:20
    }
 })
 

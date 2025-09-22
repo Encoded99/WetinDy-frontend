@@ -1,6 +1,6 @@
 import { View, Text,ScrollView,StyleSheet, Pressable,Dimensions} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { InnerLayOut } from '@/components/LayOut'
+import { InnerLayOut,InnerLayOutWithOutScroll } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
 import { Slogan, } from '@/components/Element'
 import { useGlobal } from '@/app/context'
@@ -142,16 +142,20 @@ const reset=()=>{
   isOpenSelected && !hideTimeSelector && (
     <>
     
-    <View style={styles.scrollDateContainer}>
+    <View style={[styles.scrollDateContainer,{left:'100%',}]}>
 
-<ScrollView style={styles.dateContainer}>
+<ScrollView style={styles.dateContainer}
+
+
+nestedScrollEnabled={true}
+>
 
     {
       timeMap.map((time)=>{
         return (
           
 
-          <Pressable style={styles.timeLine}  key={time}
+          <Pressable style={[styles.timeLine,]}  key={time}
           
            onPress={()=>onPress('open',time)}
           >
@@ -189,15 +193,18 @@ const reset=()=>{
   iscloseSelected  && !hideTimeSelector && (
     <>
 
-    <View style={styles.scrollDateContainer}>
- <ScrollView style={styles.dateContainer}>
+    <View style={[styles.scrollDateContainer,{right:'100%'}]}>
+ <ScrollView style={styles.dateContainer}
+ 
+ nestedScrollEnabled={true}
+ >
 
     {
       timeMap.map((time)=>{
         return (
           
 
-          <Pressable style={styles.timeLine}  key={time} onPress={()=>onPress('close',time)}>
+          <Pressable style={[styles.timeLine,]}  key={time} onPress={()=>onPress('close',time)}>
 
             <Text style={{color:'white',fontSize:RFValue(10)}}>{time}</Text>
 
@@ -307,24 +314,20 @@ const forward=()=>{
 }
 
 
-useEffect(()=>{
-
-
-
-},[])
 
 
   return (
-   <InnerLayOut>
+   <InnerLayOutWithOutScroll>
+    <LightHeader text={'List Business'}/>
     <ScrollView
      showsVerticalScrollIndicator={false}
     
     >
- <LightHeader text={'List Business'}/>
+ 
    <ColoredHeader text='What time and day do your business open?' type='black'/>
  <Slogan  text={'Create day and time your business open so client can know your availability.'}/>
 
-<View style={{paddingHorizontal:"2%",width:'100%'}}>
+<View style={{width:'100%'}}>
 
 
 
@@ -355,11 +358,11 @@ useEffect(()=>{
 
 
     </ScrollView>
-    <View style={{borderTopColor:greyText,borderTopWidth:1,paddingVertical:10}}>
+    <View style={[styles.bottomContainer,{borderTopColor:greyText,}]}>
     <ButtonWithSkip isActive={isActive}   skipFunction={skip}  continueFunction={forward} />
     </View>
 
-   </InnerLayOut>
+   </InnerLayOutWithOutScroll>
   )
 }
 
@@ -369,8 +372,7 @@ const styles=StyleSheet.create({
     width:"100%",
     borderBottomWidth:1,
     minHeight:RFValue(60),
-    paddingHorizontal:'2%',
-    justifyContent:"center"
+    justifyContent:"center",
   },
   firstLine:{
     width:"100%",
@@ -446,6 +448,13 @@ scrollDateContainer:{
  zIndex:1,
 
 
+},
+
+bottomContainer:{
+  borderTopWidth:1,
+  paddingVertical:RFValue(10),
+  justifyContent:'center',
+ 
 }
 })
 

@@ -3,7 +3,9 @@ import { Animated, Easing, View, StyleSheet,Modal,Dimensions } from 'react-nativ
 import { lightPrimary } from '@/custom';
 const {height,width}=Dimensions.get('window')
 import { useGlobal } from '@/app/context';
-
+import { FlatList } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { styles as businessStyles } from '../Business';
 
 
 
@@ -93,6 +95,143 @@ export const CircleLoader = ({isLoading}:{isLoading:boolean}) => {
   );
 };
 
+
+
+
+
+
+
+
+
+
+export const CategorySkeletonLoader = () => {
+
+ const  {darkGreyText,greyText} =useGlobal()
+  const opacity = useRef(new Animated.Value(0.3)).current;
+
+  // Fake data to show placeholders
+  const skeletonData = Array(5).fill({});
+
+
+ useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [opacity]);
+
+
+
+
+
+
+
+
+
+
+
+  const renderSkeleton = () => {
+    return (
+      <Animated.View style={[styles.subCategoryButton,{backgroundColor:greyText,opacity}]}>
+        
+      </Animated.View>
+    );
+  };
+
+  return (
+    <FlatList
+      data={skeletonData}
+      keyExtractor={(_, index) => index.toString()}
+      horizontal
+      renderItem={renderSkeleton}
+      showsHorizontalScrollIndicator={false}
+    />
+  );
+};
+
+
+
+
+
+
+export const BusinessSkeletonLoader = () => {
+
+ const  {darkGreyText,greyText} =useGlobal()
+  const opacity = useRef(new Animated.Value(0.3)).current;
+
+
+  const skeletonData = Array(5).fill({});
+
+
+ useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [opacity]);
+
+
+
+
+
+
+
+
+
+
+
+  const renderSkeleton = () => {
+    return (
+      <Animated.View style={[businessStyles.feedModalContainer,{backgroundColor:greyText,opacity}]}>
+        
+      </Animated.View>
+    );
+  };
+
+  return (
+    <FlatList
+      data={skeletonData}
+      keyExtractor={(_, index) => index.toString()}
+     
+      renderItem={renderSkeleton}
+      
+    />
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const styles = StyleSheet.create({
  
 orbit: {
@@ -134,6 +273,28 @@ width:240,
 
   borderWidth:1,
  
- }
+ },
+
+
+
+
+
+
+subCategoryButton: {
+ 
+  justifyContent:'center',
+  alignItems:'center',
+  borderRadius:10,
+ height:RFValue(45),
+  padding:RFValue(8),
+  marginRight:RFValue(8),
+  width:RFValue(100)
+  },
+
+
+
+
+
+
 });
 

@@ -169,7 +169,7 @@ useEffect(()=>{
       setText,
       handleCancel,
       handleSearch,
-
+      placeholder :'Find Category'
   }
 
 const cleanedData = data?.pages.flatMap((page) => page.data) || [];

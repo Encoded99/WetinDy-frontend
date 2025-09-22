@@ -50,7 +50,7 @@ export interface ImageType{
 
 
 
-type BusinessType={
+export type BusinessType={
   name:string,
   email?:string,
   telephone:string,
@@ -174,7 +174,9 @@ setCategoryData:(value:CategoryType[])=>void,
  categoryInstance:CategoryInstanceType,
  setCategoryInstance:(value:Partial<CategoryInstanceType>)=>void,
   selectedCategoryData:SelectedCategoryType[],
-  setSelectedCategoryData:(value:SelectedCategoryType[])=>void
+  setSelectedCategoryData:(value:SelectedCategoryType[])=>void,
+  popularCategories:CategoryType[],
+  setPopularCategories:(value:CategoryType[])=>void
 }
 
 
@@ -186,7 +188,9 @@ export const useCategory=create<UseCategoryType>((set)=>(
    setCategoryInstance:(value)=>set({categoryInstance:value}),
  
    selectedCategoryData:[],
-   setSelectedCategoryData:(value)=>set({selectedCategoryData:value}) 
+   setSelectedCategoryData:(value)=>set({selectedCategoryData:value}),
+   popularCategories:[],
+   setPopularCategories:(value)=>set({popularCategories:value}) 
   }
 ))
 

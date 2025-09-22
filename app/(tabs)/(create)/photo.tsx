@@ -47,7 +47,7 @@ const  handleCongratPress=()=>{
   setBusiness(initialBusiness)
 
 setShowCongrats(false)
-
+router.push('/(tabs)/(create)')
 
   }
  
@@ -338,8 +338,10 @@ const congratsParams={
 </View>
 
 
-
-<View style={styles.selectedImageContainer}>
+{
+  business.image.length > 0 && (
+    <>
+    <View style={styles.selectedImageContainer}>
 
   {
     business.image.map((image,index)=>{
@@ -368,9 +370,14 @@ const congratsParams={
   
      
 </View>
+    </>
+  )
+}
+
+
 
    <View style={styles.btnContainer}>
- <SubmitBtn isActive={isActive} type='normal' trigger={handleSubmit} text='Continue' />
+ <SubmitBtn isActive={isActive} type='normal' trigger={handleSubmit} text='Submit' />
    </View>
  
 
@@ -400,7 +407,7 @@ const styles=StyleSheet.create({
    btnContainer:{
     width:'100%',
     alignItems:'center',
-    marginBottom:RFValue(20)
+    marginVertical:RFValue(50)
    },
    inputContainer:{
     width:"100%",
@@ -421,7 +428,9 @@ const styles=StyleSheet.create({
     justifyContent:'center',
     height:RFValue(100),
     paddingHorizontal:'4%',
-    marginVertical:RFValue(50),
+    marginTop:RFValue(50),
+        marginBottom:RFValue(25),
+
   
     marginHorizontal:'auto'
 

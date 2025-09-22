@@ -1,7 +1,13 @@
-import { View,StyleSheet,ScrollView,KeyboardAvoidingView,Platform } from 'react-native'
+import { View,StyleSheet,ScrollView,KeyboardAvoidingView,Platform,SafeAreaView,StatusBar ,Text} from 'react-native'
 import React from 'react'
 import { useGlobal } from '@/app/context'
 import { RFValue } from 'react-native-responsive-fontsize'
+import { percentagePadding, standardPaddingTop } from './Element'
+
+
+
+
+
 
 export const AuthLayOut=({children}:{children:React.ReactNode})=>{
 
@@ -10,10 +16,17 @@ export const AuthLayOut=({children}:{children:React.ReactNode})=>{
     <>
 
 
-
-    <View style={[styles.container,{backgroundColor:background}]}>
+<SafeAreaView  style={{width:'100%',flex:1,paddingTop:standardPaddingTop,backgroundColor:background}}>
+ <StatusBar
+          barStyle="dark-content" // or 'light-content'
+          backgroundColor={background}  // Android only
+        />
+    
+<View style={[styles.container,{backgroundColor:background}]}>
        {children}
     </View>
+</SafeAreaView>
+    
     
     
     </>
@@ -29,9 +42,15 @@ export const InnerLayOut=({children}:{children:React.ReactNode})=>{
     <>
 
 
+<SafeAreaView  style={{width:'100%',flex:1,paddingTop:standardPaddingTop,backgroundColor:background}}>
 
+    <StatusBar
+          barStyle="dark-content" // or 'light-content'
+          backgroundColor={background}  // Android only
+        />
     
-    <KeyboardAvoidingView
+
+      <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS uses padding, Android uses height
           keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // Adjust if header overlaps input
@@ -39,7 +58,7 @@ export const InnerLayOut=({children}:{children:React.ReactNode})=>{
 
      
 <ScrollView
-    style={{ flex: 1, backgroundColor: background,   }}
+    style={styles.innerContainer}
     contentContainerStyle={{ flexGrow: 1 }}
     keyboardShouldPersistTaps="handled"
   >
@@ -52,6 +71,10 @@ export const InnerLayOut=({children}:{children:React.ReactNode})=>{
       
 
         </KeyboardAvoidingView>
+
+
+</SafeAreaView>
+    
 
 
 
@@ -69,10 +92,16 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
   return (
     <>
 
+<SafeAreaView  style={{width:'100%',flex:1,backgroundColor:background}}>
+    <StatusBar
+          barStyle="dark-content" // or 'light-content'
+          backgroundColor={background}  // Android only
+        />
 
 
-    
-    <KeyboardAvoidingView
+
+
+  <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS uses padding, Android uses height
           keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // Adjust if header overlaps input
@@ -80,7 +109,7 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
 
         
              
- <View style={[styles.innerContainer,{backgroundColor:background}]}>
+ <View style={[styles.innerContainer]}>
           {children}
         </View>
 
@@ -89,6 +118,12 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
       
 
         </KeyboardAvoidingView>
+
+
+</SafeAreaView>
+
+    
+    
 
 
 
@@ -104,24 +139,24 @@ const styles= StyleSheet.create({
 
   container:{
     width:"100%",
-    padding:'2%',
+   
     flex:1,
    justifyContent:'flex-start',
-    paddingTop:RFValue(20)
+    
 
   },
 
     innerContainer:{
     width:"100%",
-    padding:'2%',
+    padding:percentagePadding,
+    paddingBottom:0,
     flex:1,
-  
-    paddingTop:RFValue(20)
+
+
   },
 
 
  
 
 })
-
 

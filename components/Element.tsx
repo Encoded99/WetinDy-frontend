@@ -576,7 +576,7 @@ export const ImageField=React.memo((param:ImageFieldType)=>{
            <View  style={[styles.imageContainer,{borderColor:greyText,backgroundColor:greyText,}]}>
 
             <MaterialCommunityIcons color={textColor} size={RFValue(45)} name='camera-outline'  onPress={onPick}/>
-            <Text style={{color:textColor,fontSize:RFValue(16),fontFamily:'Poppins-Regular'}}>Add Photos</Text>
+            <Text style={{color:textColor,fontSize:RFValue(16),fontFamily:'Poppins-Regular'}}  onPress={onPick}>Add Photos</Text>
            </View>
       
         
@@ -641,6 +641,8 @@ export const SearchSelectField=React.memo((params:SearchSelectFieldType)=>{
     <>
 
     <View style={styles.inputContainer}>
+
+
       <Text style={[styles.inputLabel,{color:darkGreyText}]}>{label}</Text>
        <View style={[styles.searchSelectFieldContainer,{borderColor:greyText}]}>
 
@@ -717,7 +719,8 @@ interface SearchFieldType{
   text:string,
   setText:Dispatch<SetStateAction<string>>;
   handleCancel:()=>void,
-  handleSearch:()=>void
+  handleSearch:()=>void,
+  placeholder:string
 }
 
 
@@ -726,8 +729,8 @@ interface SearchFieldType{
 
 
 export const SearchField=React.memo((params:SearchFieldType)=>{
-  const {textColor,greyText,darkGreyText}= useGlobal()
-  const {text,setText,handleCancel,handleSearch}=params
+  const {textColor,greyText,}= useGlobal()
+  const {text,setText,handleCancel,handleSearch,placeholder}=params
   
   
 
@@ -741,7 +744,7 @@ export const SearchField=React.memo((params:SearchFieldType)=>{
         <TextInput style={[styles.searchInput,{width:'100%',paddingHorizontal:'15%'}]}
            value={text}
            onChangeText={(value)=>{setText(value);}}
-         placeholder='Find Category'
+         placeholder={placeholder}
            /> 
 
            <MaterialCommunityIcons style={styles.searchLogo} size={RFValue(25)} color={textColor}  name={'magnify'}
@@ -829,13 +832,64 @@ export const AccountStatus=({link}:{link:'sign-in'|'sign-up'})=>{
   )
 }
 
+
+
+
+
+interface TextCounterProps {
+  text: string;
+  maxLength: number;
+  onExceed: () => void;
+  onValid: () => void;
+}
+
+export const TextCounter: React.FC<TextCounterProps> = ({ text, maxLength, onExceed, onValid }) => {
+  const {textColor}=useGlobal()
+
+
+  React.useEffect(() => {
+    if (text.length > maxLength) {
+      onExceed();
+    } else {
+      onValid();
+    }
+  }, [text, maxLength, onExceed, onValid]);
+
+  return (
+    <Text style={[styles.counter,   { color:text.length>maxLength? "red":textColor }]}>
+      {text.length}/{maxLength}
+    </Text>
+  );
+};
+
+
+
+
+
+
+
+
+
 export const standardHeight=RFValue(50)
 export const percentagePadding='4%'
 export const standardBorderRadius=10
+export const standardPaddingTop=30
 
 const styles = StyleSheet.create({
+
+
+ counter: {
+    textAlign: "right",
+    fontFamily:"Poppins-Bold",
+    fontSize:RFValue(13)
+    
+  },
+
+
+
   submitBtn:{
-    width:"90%",
+    width:"100%",
+   
     height:standardHeight,
     backgroundColor:primary,
     justifyContent:'center',
@@ -843,11 +897,11 @@ const styles = StyleSheet.create({
     borderRadius:standardBorderRadius,
     flexDirection:"row",
     borderWidth:2,
-   
+    
   },
 
  whiteBtn:{
-    width:"90%",
+    width:"100%",
     height:standardHeight,
     backgroundColor:primary,
     justifyContent:'center',
@@ -872,7 +926,8 @@ const styles = StyleSheet.create({
      width:'100%',
     flexDirection:'row',
     justifyContent:'flex-start',
-    paddingLeft:percentagePadding
+   
+   
 
   },
 
@@ -884,7 +939,6 @@ const styles = StyleSheet.create({
   inputContainer:{
     width:'100%',
     alignSelf:"center",
-    paddingHorizontal:percentagePadding,
    
   },
 
@@ -1056,7 +1110,6 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     justifyContent:'space-between',
     alignItems:'center',
-    paddingHorizontal:percentagePadding
   },
   skipText:{
     fontSize:RFValue(18),

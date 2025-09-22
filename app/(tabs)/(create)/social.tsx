@@ -259,6 +259,12 @@ const styles=StyleSheet.create({
     fontSize:RFValue(10)
    
 
+   },
+   backSubCategoryHeader:{
+    width:"100%",
+    flexDirection:"row",
+    marginVertical:RFValue(10),
+    alignItems:"center"
    }
 })
 

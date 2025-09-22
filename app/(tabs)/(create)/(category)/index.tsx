@@ -86,9 +86,8 @@ React.useEffect(()=>{
   return (
     <InnerLayOut>
   
-
-
-<LightHeader text={'List Business'}/>
+<View style={{width:'100%',flex:1,}}>
+  <LightHeader text={'List Business'}/>
    <ColoredHeader text='What kind of Business are you listing' type='black'/>
  <Slogan  text={'Add up to 3 categories that can best describe the business you’re listing.'}/>
 
@@ -118,6 +117,10 @@ React.useEffect(()=>{
 
 
 
+</View>
+
+
+
     
    
 
@@ -136,9 +139,10 @@ React.useEffect(()=>{
 
 const styles=StyleSheet.create({
    btnContainer:{
-    width:'100%',
+   
     alignItems:'center',
      marginVertical:RFValue(20),
+    alignSelf:'stretch'
    },
 
    dropDownContainer:{

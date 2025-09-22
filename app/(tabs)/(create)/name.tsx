@@ -2,7 +2,7 @@ import { View, Text,StyleSheet,Dimensions,KeyboardAvoidingView,ScrollView,Platfo
 import React,{useState,useEffect} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
-import { SubmitBtn,InputField,InputType } from '@/components/Element'
+import { SubmitBtn,InputField,InputType, percentagePadding } from '@/components/Element'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useBusiness } from '@/store/business'
@@ -62,12 +62,16 @@ else{
    
    <InnerLayOut>
 
-      
-          <LightHeader text={'List Business'} />
+          <View style={{width:'100%',marginVertical:RFValue(10)}}>
+<LightHeader text={'List Business'} />
+          </View>
+          
           <InputField {...params} />
 
           <View style={styles.contentContainer}>
-            <View style={styles.modal}>
+
+           <View style={{width:'100%'}}>
+<View style={styles.modal}>
               <View style={{ justifyContent: 'flex-start', marginRight: 0, width: '15%' }}>
                 <MaterialCommunityIcons color={'#FEAA34'} size={0.08 * width} name='alert-circle-outline' />
               </View>
@@ -78,6 +82,9 @@ else{
                 </Text>
               </View>
             </View>
+           </View>
+
+          
 
             <View style={styles.btnContainer}>
               <SubmitBtn isActive={isActive} type='normal' trigger={handleSubmit} text='Continue' />
@@ -95,13 +102,16 @@ else{
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    padding: '2%',
+   
     justifyContent: 'flex-end',
+    
   },
   btnContainer: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 20,
+    marginVertical: 20,
+   
+    
   },
   modal: {
     width: '100%',

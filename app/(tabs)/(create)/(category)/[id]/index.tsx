@@ -184,7 +184,7 @@ const handleCancel=()=>{
       setText,
       handleCancel,
       handleSearch,
-
+      placeholder :'Find Category'
   }
 
 const cleanedData = data?.pages.flatMap((page) => page.data) || [];
@@ -236,7 +236,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
       {
         currentPage>1?(
           <>
-          <View style={{width:'100%',flex:1,justifyContent:'center',alignItems:"center",backgroundColor:"red",}}>
+          <View style={{width:'100%',flex:1,justifyContent:'center',alignItems:"center",}}>
        
            <ActivityIndicator size="large" color={primary} />
          
