@@ -114,6 +114,17 @@ const Layout = () => {
           },
         }}
       />
+
+      
+        <Stack.Screen
+           name="claim"
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+        }}
+      />
     </Stack>
 
     

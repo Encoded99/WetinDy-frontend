@@ -1,10 +1,10 @@
 import { View, Text,StyleSheet,ImageBackground,SafeAreaView,StatusBar,ScrollView, TouchableOpacity, findNodeHandle, Pressable, TextInput,NativeSyntheticEvent,NativeScrollEvent } from 'react-native'
-import React, { useState,useRef } from 'react'
+import React, { useState,useRef,useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import { api,apiUrl } from '@/functions/axios';
 import { useLocalSearchParams } from 'expo-router';
 import { InnerLayOut } from '@/components/LayOut';
-import { LargePreLoader } from '@/components/ui/Loader';
+import { LargePreLoader ,CircleLoader} from '@/components/ui/Loader';
 import { percentagePadding, standardBorderRadius, standardHeight } from '@/components/Element';
 import { LargeErrorComponent } from '@/components/Error';
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -16,7 +16,12 @@ import { useGlobal } from '@/app/context';
 import { DayInfo } from '@/store/business';
 import { SubmitBtn } from '@/components/Element';
 import { ReviewModal } from '@/components/Review';
-import { TextCounter } from '@/components/Element';
+import { TextCounter,DescriptionField } from '@/components/Element';
+import { notFoundError,errorOne } from '@/custom';
+import { ReviewType } from '@/store/business';
+
+
+
 
 const imageIconColor='white'
 const imageIconSize=RFValue(35)
@@ -26,7 +31,7 @@ type LinkInstanceType='Overview'|'Reviews'|'Services'
 const index = () => {
  const {textColor,background,greyText,darkGreyText}=useGlobal()
  const {id}=useLocalSearchParams()
- const {user}=useAuth()
+ const {user,setResponseMessage,setIsError}=useAuth()
  const [imageIndex,setImageIndex]=useState<number>(0)
  const [instance,setInstance]=useState<LinkInstanceType>('Overview')
  const [showFullDescription,setShowFullDescription]=useState<boolean>(false)
@@ -35,10 +40,14 @@ const [overviewY, setOverviewY] = useState(0);
 const [serviceY, setServiceY] = useState(0);
 const [reviewY, setReviewY] = useState(0);
 const [fixTab,setFixTab]=useState<boolean>(false)
+const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
+const [isPreviewLoading,setIsPreviewLoading]=useState<boolean>(false)
+const [isActive,setIsActive]=useState<boolean>(false)
+const [ratingNo,setRatingNo]=useState<number>(0)
 
 type DataType={
   business:FinalBusinessType,
-  reviews:string[]
+  reviews:ReviewType[]
 }
 
 
@@ -191,12 +200,106 @@ const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 
 
 
+const  postReview=async()=>{
+
+
+if (!isActive) return
+ setIsSubmitClicked(true)
+  if ( ratingNo===0) {
+
+    setResponseMessage('Please leave a rating for this business')
+    setIsError(true)
+    return
+
+  }
+
+  
+ 
+  if(reviewText ){
+  setIsPreviewLoading(true)
+  }
+
+  try{
+
+
+     const data={
+    content:reviewText,
+    ratings:ratingNo
+   }
+
+
+   const url=`${apiUrl}/reviews/post-review/${business?._id}`
+
+  await api.post(url,data)
+
+setIsError(false)
+ setResponseMessage("Your review has been posted successfully.")
+
+  setRatingNo(0)
+  setReviewText('')
 
 
 
 
 
-if (isLoading){
+
+  }
+catch(err:any){
+
+   setIsError(true)
+
+
+  if (err?.response?.status==='404'){
+    setResponseMessage(notFoundError)
+    setIsPreviewLoading(false)
+    return
+  }
+
+    if (err?.response?.data){
+     
+    setResponseMessage(err?.response?.data)
+    setIsPreviewLoading(false)
+    return
+    }
+  
+    setResponseMessage(errorOne)
+
+}
+
+finally{
+  setIsPreviewLoading(false)
+  setIsSubmitClicked(false)
+}
+}
+
+
+
+
+
+
+useEffect(()=>{
+
+  if ( reviewText){
+    setIsActive(true)
+  }
+
+  else{
+    setIsActive(false)
+  }
+
+},[reviewText])
+
+
+
+
+
+
+
+
+
+
+
+if (isLoading ){
  return (
   <>
    <InnerLayOut>
@@ -206,6 +309,7 @@ if (isLoading){
   </>
  )
 }
+
 
 
 if (isError){
@@ -222,6 +326,7 @@ if (isError){
 
   return (
    <>
+   <CircleLoader isLoading={isPreviewLoading}/>
    <SafeAreaView style={{flex:1,}}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
        {
@@ -598,26 +703,45 @@ if (isError){
   {
     Array.from({length:5}).map((star,index)=>{
       return (
-        <View key={index} >
-       <MaterialCommunityIcons size={RFValue(35)} color={textColor} name='star-outline'/>
+        <TouchableOpacity key={index}   onPress={async()=>{
 
-        </View>
+          
+            if (ratingNo===index+1){
+              setRatingNo(0)
+            } else{
+              setRatingNo(index+1)
+          
+            }
+        }}>
+       <MaterialCommunityIcons size={RFValue(35)} color={ratingNo>=index+1 ?primary : textColor} name={ ratingNo>=index+1? 'star' :'star-outline'}/>
+
+        </TouchableOpacity>
       )
     })
   }
   </View>
+  <View style={{width:'100%',marginVertical:RFValue(20)}}>
+     <DescriptionField placeholder='Write your review' setText={setReviewText}  text={reviewText} isSubmitClicked={isSubmitClicked}/>
+   
 
-
-  <TextInput numberOfLines={5} style={[styles.reviewInput,{borderColor:textColor}]}/>
-  <TextCounter text={reviewText} maxLength={250} onValid={handleClaim} onExceed={handleClaim}/>
+  </View>
+     <TextCounter text={reviewText} maxLength={250} onValid={()=>setIsActive(true)} onExceed={()=>setIsActive(false)}/>
+ 
   <View style={{width:'100%',marginVertical:RFValue(10)}}>
 
-    <SubmitBtn isActive={true}  trigger={()=>console.log('pressed')} text='Submit' type='normal' />
+    <SubmitBtn isActive={isActive}  trigger={postReview} text='Submit' type='normal' />
 
   </View>
    
    <View style={{width:'100%',marginVertical:RFValue(50)}}>
-<ReviewModal/>
+
+{
+   reviews?.map((item,index)=>{
+    return (
+     <ReviewModal  item={item}   key={index}/> 
+    )
+   })
+}
    </View>
   
 

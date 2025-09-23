@@ -165,7 +165,7 @@ setIsLoading(true)
   catch(err:any){
     setResponseMessage('Error uploading Image')
     setIsError(true)
- console.log(err.response.data,'error resposn ima')
+
     setIsLoading(false)
    return null
     

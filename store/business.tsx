@@ -216,3 +216,23 @@ type AddedType={
 }
 
 export type FinalBusinessType= Omit<BusinessType, 'categories'> & AddedType
+
+
+
+
+  export type ReviewType={
+    _id:string,
+    ratings:number,
+    dislike:number,
+    createdAt:string,
+    content:string,
+    like:number,
+    user:{
+      image:{
+        url:string
+      },
+      firstName:string,
+      lastName:string,
+      reviewNo:number
+    }
+  }
