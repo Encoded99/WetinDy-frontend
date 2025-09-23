@@ -2,15 +2,9 @@ import { View,StyleSheet,Text,Dimensions,Image} from 'react-native'
 import { BusinessType } from '@/store/business'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { MaterialCommunityIcons,Ionicons } from '@expo/vector-icons'
-
+import { FinalBusinessType } from '@/store/business'
 const {height}=Dimensions.get('window')
 
-
-
-
-export type FinalBusinessType= BusinessType & {
- _id:string
-}
 
 
 

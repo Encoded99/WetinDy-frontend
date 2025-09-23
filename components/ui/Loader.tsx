@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, View, StyleSheet,Modal,Dimensions } from 'react-native';
+import { Animated, Easing, View, StyleSheet,Modal,Dimensions,ImageBackground } from 'react-native';
 import { lightPrimary } from '@/custom';
 const {height,width}=Dimensions.get('window')
 import { useGlobal } from '@/app/context';
@@ -11,9 +11,16 @@ import { styles as businessStyles } from '../Business';
 
 
 
-export const CircleLoader = ({isLoading}:{isLoading:boolean}) => {
 
-  const {background,greyText}=useGlobal()
+
+
+
+
+export const Rotation=()=>{
+
+
+
+const {background,textColor}=useGlobal()
   const spin = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -39,26 +46,21 @@ export const CircleLoader = ({isLoading}:{isLoading:boolean}) => {
   const r3=160
   
 
+
+
+
+
+
   return (
-
-    <Modal 
-    visible={isLoading}
-    transparent={true}
-    
-    >
+    <>
+      <View style={[styles.animationBackground,{backgroundColor:background,borderColor:textColor}]}>
+    <View style={[styles.innerCircle,{height:r1,width:r1,borderRadius:r1,borderColor:textColor}]}>
 
 
-<View style={styles.circleOverlay}>
+<View style={[styles.innerCircle,{height:r2,width:r2,borderRadius:r2,borderColor:textColor}]}>
 
 
-  <View style={[styles.animationBackground,{backgroundColor:background,borderColor:greyText}]}>
-    <View style={[styles.innerCircle,{height:r1,width:r1,borderRadius:r1,borderColor:greyText}]}>
-
-
-<View style={[styles.innerCircle,{height:r2,width:r2,borderRadius:r2,borderColor:greyText}]}>
-
-
-  <View style={[styles.innerCircle,{height:r3,width:r3,borderRadius:r3,borderColor:greyText}]}>
+  <View style={[styles.innerCircle,{height:r3,width:r3,borderRadius:r3,borderColor:textColor}]}>
 
 
 <Animated.View
@@ -85,6 +87,49 @@ export const CircleLoader = ({isLoading}:{isLoading:boolean}) => {
  
  
   </View>
+    
+    </>
+  )
+}
+
+
+
+
+
+export const LargePreLoader=()=>{
+
+  const {background}=useGlobal()
+  return (
+    <>
+    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
+
+      <Rotation/>
+
+    </View>
+    </>
+  )
+}
+
+
+
+
+
+export const CircleLoader = ({isLoading}:{isLoading:boolean}) => {
+
+  
+  return (
+
+    <Modal 
+    visible={isLoading}
+    transparent={true}
+    
+    >
+
+
+<View style={styles.circleOverlay}>
+
+
+ <Rotation/>
  
 </View>
 

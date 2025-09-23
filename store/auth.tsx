@@ -86,7 +86,8 @@ type UserType={
   country:string,
   image:{
     url:string,
-  }
+  },
+  prefix:string,
 }
 
 
@@ -114,8 +115,8 @@ const initialUser={
   image:{
     url:''
   },
-  country:""
-  
+  country:"",
+  prefix:''
 }
 
 

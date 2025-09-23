@@ -26,6 +26,29 @@ export const ErrorComponent=({errorMessage,onRetry}:{errorMessage?:string,onRetr
  )
 }
 
+
+
+export const LargeErrorComponent=({errorMessage,onRetry}:{errorMessage?:string,onRetry:()=>void})=>{
+
+  const {background} = useGlobal()
+
+  return (
+    <>
+    
+    <View style={{flex:1,justifyContent:'center',alignItems:"center",backgroundColor:background}}>
+
+      <ErrorComponent errorMessage={errorMessage}  onRetry={onRetry}  />
+
+
+    </View>
+    
+    </>
+  )
+}
+
+
+
+
 const styles=StyleSheet.create({
  errorContainer:{
   width:'95%',

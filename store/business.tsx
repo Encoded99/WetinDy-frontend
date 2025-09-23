@@ -195,3 +195,24 @@ export const useCategory=create<UseCategoryType>((set)=>(
 ))
 
 
+type AddedType={
+   _id:string,
+   categories:{
+      categoryOne:{
+         name:string,
+         _id:string
+      },
+       categoryTwo:{
+         name:string,
+         _id:string
+      },
+       categoryThree:{
+         name:string,
+         _id:string
+      },
+   },
+   ratings:number,
+   isVerified:boolean
+}
+
+export type FinalBusinessType= Omit<BusinessType, 'categories'> & AddedType

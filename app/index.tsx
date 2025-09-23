@@ -42,7 +42,7 @@ try{
 
   if (token){
    setIsLoggedIn(true)
-  router.push('/(tabs)/(home)')
+  router.push('/(tabs)/(home)/(discover)/68cfd7f60369efdbb129a5a6')
   }
 
   else{ 
