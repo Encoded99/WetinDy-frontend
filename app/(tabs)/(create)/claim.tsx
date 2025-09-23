@@ -8,12 +8,12 @@ import { useRouter } from 'expo-router'
 
 const claim = () => {
   const router=useRouter()
-const {setBusiness}=useBusiness()
+const {setBusiness,setClaimMode}=useBusiness()
 const isActive=true
 const handleSubmit=()=>{
 
  setBusiness({isPostedByOwner:true})
-
+  setClaimMode(true)
 router.push('/(tabs)/(create)/name')
 
 
@@ -24,7 +24,7 @@ router.push('/(tabs)/(create)/name')
 
   return (
     <InnerLayOut>
-   <LightHeader text={'List Business'}/>
+   <LightHeader text={''}/>
    <ColoredHeader text='Are you sure you are the owner of Tony Enterprise?' type='black'/>
 
  <View style={styles.contentContainer}>

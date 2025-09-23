@@ -136,12 +136,24 @@ type SelectedCategoryType= CategoryType & InstanceType
 
 
 
+type CategoryNameType={
+     categoryOne?:string,
+    categoryTwo?:string,
+    categoryThree?:string,
+
+}
+
+
+
 export type UseBusinessType={
   business:BusinessType,
   setBusiness:(value:Partial<BusinessType>)=>void,
   setBusinessOperatingTime:(value:DayInfo,indexSent:number)=>void
- 
+  claimMode:boolean,
+  setClaimMode:(value:boolean)=>void,
+  tempCategoriesName:CategoryNameType,
 
+  setTempCategoriesName:(value:CategoryNameType)=>void
   
 }
 
@@ -162,7 +174,15 @@ export const useBusiness=create<UseBusinessType>((set)=>({
     },
   })),
   
+ claimMode:false,
+ setClaimMode:(value)=>set({claimMode:value}),
+ tempCategoriesName:{
+  categoryOne:"",
+  categoryTwo:"",
+  categoryThree:""
+ },
 
+setTempCategoriesName:(value)=>set({tempCategoriesName:value})
 
 }))
 
@@ -212,7 +232,8 @@ type AddedType={
       },
    },
    ratings:number,
-   isVerified:boolean
+   isVerified:boolean,
+   noOfRatings:number
 }
 
 export type FinalBusinessType= Omit<BusinessType, 'categories'> & AddedType

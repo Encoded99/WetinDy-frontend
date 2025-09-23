@@ -15,7 +15,7 @@ const index = () => {
 
 
   const {setResponseMessage,setIsError,}=useAuth()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,claimMode}=useBusiness()
    const [isLoading,setIsLoading]=useState<boolean>(false)
   const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
    const [isActive,setIsActive]=useState<boolean>(false)
@@ -23,6 +23,13 @@ const router=useRouter()
 
 
 const handleSubmit=async()=>{
+
+   if (claimMode){
+    router.push('/(tabs)/(create)/contact')
+    return
+   }
+
+
 
   setIsSubmitClicked(true)
   if (!isActive) return

@@ -1,4 +1,4 @@
-import { View, StyleSheet,Image,ScrollView } from 'react-native'
+import { View, StyleSheet,Image,ScrollView,Text } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { InnerLayOut } from '@/components/LayOut'
 import { LightHeader,ColoredHeader, } from '@/components/Header'
@@ -30,11 +30,12 @@ import { initialBusiness } from '@/store/business'
 const index = () => {
   const {setResponseMessage,setIsError,user}=useAuth()
  const {darkGreyText}=useGlobal()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,claimMode}=useBusiness()
   const [isActive,setIsActive]=useState<boolean>(false)
   const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
 const [showCongrats,setShowCongrats]=useState<boolean>(false)
 const [isLoading,setIsLoading]=useState<boolean>(false)
+const [isImageChosen,setIsImageChosen]=useState<boolean>(false)
 
 const router= useRouter()
 
@@ -45,9 +46,9 @@ const  handleCongratPress=()=>{
 
 
   setBusiness(initialBusiness)
-
-setShowCongrats(false)
 router.push('/(tabs)/(create)')
+setShowCongrats(false)
+
 
   }
  
@@ -92,7 +93,7 @@ const imageArray= [
 
 setBusiness({image:imageArray})
 
- 
+setIsImageChosen(true)
 
   }
 };
@@ -181,11 +182,13 @@ setIsLoading(true)
 
 
 
+const handleClaim=async()=>{
 
 
 
 
-const handleSubmit=async()=>{
+
+
 
 
 
@@ -199,7 +202,95 @@ setIsLoading(true)
 
 
 
-  if (business.image.length>0){
+
+
+  if (business.image.length>0 && isImageChosen){
+    const value= await uploadToCloudinary()
+
+    if (value===null){
+       throw new Error ('Error uploading image')
+    }
+
+    else{
+
+     business.image=value
+      
+    }
+  }
+
+
+
+
+  try{
+  
+  
+  
+     const url=`${apiUrl}/business/claim-business`
+  
+    await api.post(url,business)
+  
+  
+   
+    setShowCongrats(true)
+  
+  
+  
+  
+    }
+  catch(err:any){
+  
+     setIsError(true)
+
+  console.log(err?.response?.data,'gotten error')
+  if (err?.response?.status===404){
+ 
+    setResponseMessage(notFoundError)
+    setIsLoading(false)
+    return
+  }
+
+
+
+      if (err?.response?.data ==='string'){
+       
+      const message =
+    typeof err.response.data === 'string'
+      ? err.response.data
+      : err.response.data.error || JSON.stringify(err.response.data);
+
+  setResponseMessage(message);
+  setIsLoading(false);
+  return;
+  
+      }
+    
+      setResponseMessage(errorOne)
+  
+  }
+  
+  finally{
+    setIsLoading(false)
+  }
+}
+
+
+
+
+const handleListing=async()=>{
+
+
+
+  setIsSubmitClicked(true)
+
+  if (!isActive)return
+
+setIsLoading(true)
+
+
+
+
+
+  if (business.image.length>0  && business.isPostedByOwner){
     const value= await uploadToCloudinary()
 
     if (value===null){
@@ -271,6 +362,17 @@ setIsLoading(true)
 }
 
 
+const handleSubmit=async()=>{
+
+  if (!claimMode){
+   await handleListing()
+  }
+  else{
+  await   handleClaim()
+  }
+
+}
+
 
 
 const handleDelete=(param:ImageType)=>{
@@ -285,15 +387,23 @@ const handleDelete=(param:ImageType)=>{
 
 
 useEffect(()=>{
-
-
-if (business.image.length>0){
+   
+    if(business.isPostedByOwner){
+      if (business.image.length>0  && isImageChosen){
   setIsActive(true)
 }
+
 
 else{
   setIsActive(false)
 }
+
+    }
+
+    else{
+      setIsActive(true)
+    }
+
 
 },[business.image])
 
@@ -312,6 +422,55 @@ const congratsParams={
   text:business.isPostedByOwner?"Thank you! This business will appear once approved.":'Thank you! This business will appear once approved. The owner can claim it later.'
 
 }
+
+
+
+
+
+if (business.isPostedByOwner===false){
+
+
+
+
+  return(
+    <>
+     <CongratsResponse  {...congratsParams}/>
+ 
+<CircleLoader isLoading={isLoading}/>
+
+
+<InnerLayOut>
+    <LightHeader text={'List Business'}/>
+      <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%' }}>
+        <View style={styles.notifyOwnerWrapper}>
+              
+          <ColoredHeader text={`Listing Confirmation for ${business.name}`} type='black' />
+           <Text style={{color:darkGreyText,fontSize:RFValue(15),fontFamily:'Poppins-Bold',textAlign:'justify',marginTop:RFValue(20)}}>
+               {`You have filled all required information for ${business.name}, Since this business is not yours, we will notify the owner about your request. You can now continue and submit the listing.`}
+          </Text>
+        
+        </View>
+
+      </ScrollView>
+       <View style={styles.btnContainer}>
+ <SubmitBtn isActive={isActive} type='normal' trigger={handleSubmit} text='Submit' />
+   </View>
+ 
+    </InnerLayOut>
+
+
+
+
+
+    
+    
+    </>
+  )
+
+
+}
+
+
 
 
 
@@ -398,6 +557,32 @@ const congratsParams={
 }
 
 const styles=StyleSheet.create({
+
+notifyOwnerWrapper: {
+    width: '100%',
+   
+    marginVertical: RFValue(10),
+  },
+  notifyOwnerHeader: {
+    fontSize: RFValue(18),
+    fontWeight: '700',
+    marginBottom: RFValue(10),
+  // theme can be adjusted
+  },
+  notifyOwnerMessage: {
+    fontSize: RFValue(14),
+ 
+    marginBottom: RFValue(8),
+    lineHeight: RFValue(20),
+  },
+
+
+
+
+
+
+
+
    contentContainer:{
     flex:1,
     padding:'2%',

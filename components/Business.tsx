@@ -1,8 +1,13 @@
-import { View,StyleSheet,Text,Dimensions,Image} from 'react-native'
+import { View,StyleSheet,Text,Dimensions,Image,Pressable} from 'react-native'
 import { BusinessType } from '@/store/business'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { MaterialCommunityIcons,Ionicons } from '@expo/vector-icons'
 import { FinalBusinessType } from '@/store/business'
+import { useRouter } from 'expo-router'
+
+
+
+
 const {height}=Dimensions.get('window')
 
 
@@ -12,12 +17,17 @@ const {height}=Dimensions.get('window')
 
 export const BusinessRenderItem=({item,textColor}:{item:FinalBusinessType,textColor:string})=>{
 
+   const router=useRouter()
 
+const handlePress=()=>{
+   router.push(`/(tabs)/(home)/(discover)/${item._id}`)
+}
 
  return (
   <>
-        <View
+        <Pressable
         style={styles.feedModalContainer}
+        onPress={handlePress}
         >
         <Image 
           source={{ uri: item?.image[0]?.url }}
@@ -67,7 +77,7 @@ export const BusinessRenderItem=({item,textColor}:{item:FinalBusinessType,textCo
             
          </View>
 
-        </View>
+        </Pressable>
       
         
 

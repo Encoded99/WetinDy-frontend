@@ -17,7 +17,7 @@ import { CircleLoader } from '@/components/ui/Loader'
 const index = () => {
   const router=useRouter()
     const {setResponseMessage,setIsError,}=useAuth()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,claimMode}=useBusiness()
   const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
    const [isActive,setIsActive]=useState<boolean>(false)
     const [isOtpShown,setIsOtpShown]=useState<boolean>(false)
@@ -30,6 +30,12 @@ const index = () => {
 
 
 const handleSubmit=async()=>{
+
+
+  if (claimMode){
+    router.push('/(tabs)/operation')
+    return
+  }
 
   setIsSubmitClicked(true)
   if (!isActive) return

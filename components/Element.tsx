@@ -677,6 +677,7 @@ export const SearchSelectField=React.memo((params:SearchSelectFieldType)=>{
 
 
 export const DropDown=React.memo(({label,value}:{label:string,value:CategoryInstanceType})=>{
+  const {tempCategoriesName,claimMode}=useBusiness()
   const {textColor,greyText,darkGreyText}= useGlobal()
   const {setCategoryInstance,selectedCategoryData}=useCategory()
   const router= useRouter()
@@ -692,7 +693,11 @@ setCategoryInstance(value)
  router.push('/(tabs)/(create)/(category)/main')
 }
 
+const placeHolderOne= claimMode && tempCategoriesName.categoryOne?tempCategoriesName.categoryOne:'e.g Food'
+const placeHolderTwo= claimMode && tempCategoriesName.categoryTwo?tempCategoriesName.categoryTwo:'e.g Food'
+const placeHolderThree= claimMode && tempCategoriesName.categoryThree?tempCategoriesName.categoryThree:'e.g Food'
 
+const finalPlaceHolder=value==='category-1'?placeHolderOne:value==='category-2'?placeHolderTwo:placeHolderThree
   
 
   return(
@@ -703,7 +708,7 @@ setCategoryInstance(value)
        <TouchableOpacity style={[styles.dropDownFieldContainer,{borderColor:greyText}]}
        onPress={handleClick}
        >
-        <Text style={{color:isInstanceSelected?textColor:darkGreyText,fontSize:RFValue(14),fontFamily:'Poppins-Regular'}}> {!isInstanceSelected?'e.g Food':isInstanceSelected.name}</Text>
+        <Text style={{color:isInstanceSelected?textColor:darkGreyText,fontSize:RFValue(14),fontFamily:'Poppins-Regular'}}> {!isInstanceSelected?finalPlaceHolder:isInstanceSelected.name}</Text>
 
         <MaterialCommunityIcons name='chevron-right' size={RFValue(30)} color={textColor}/>
 

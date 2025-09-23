@@ -14,7 +14,7 @@ const {width}=Dimensions.get('window')
 const index = () => {
 
   const router=useRouter()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,}=useBusiness()
   const [isSubmitClicked,setIsSubmitClicked]= useState<boolean>(false)
   const [isActive,setIsActive]=useState<boolean>(false)
  

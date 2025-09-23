@@ -17,7 +17,7 @@ import { RFValue } from 'react-native-responsive-fontsize'
 
 const index = () => {
   const router=useRouter()
-  const {business}=useBusiness()
+  const {business,}=useBusiness()
    const [isActive,setIsActive]=useState<boolean>(false)
 
 
@@ -48,8 +48,8 @@ router.push('/(tabs)/(create)/address')
 const dropData:DropDataType[]=[
   {
     _id:1,
-    label:'Category 1 *',
-    value:'category-1'
+    label: 'Category 1 *',
+    value: 'category-1'
   },
 
    {

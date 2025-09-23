@@ -14,7 +14,7 @@ import { useAuth } from '@/store/auth'
 
 const index = () => {
     const {setResponseMessage,setIsError,}=useAuth()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,claimMode}=useBusiness()
   const [isActive,setIsActive]=useState<boolean>(false)
   const [isLoading,setIsLoading]=useState<boolean>(false)
  const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
@@ -29,6 +29,13 @@ const skipFunction=()=>{
 
 
 const handleSubmit=async()=>{
+
+   if (claimMode){
+     router.push('/(tabs)/(create)/social')
+    return
+  }
+
+
 
   setIsSubmitClicked(true)
   if (!isActive) return

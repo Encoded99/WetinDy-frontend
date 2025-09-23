@@ -9,7 +9,7 @@ import { percentagePadding, standardBorderRadius, standardHeight } from '@/compo
 import { LargeErrorComponent } from '@/components/Error';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { FinalBusinessType } from '@/store/business'
+import { BusinessType, FinalBusinessType } from '@/store/business'
 import { useAuth } from '@/store/auth';
 import { lightPrimary, primary } from '@/custom';
 import { useGlobal } from '@/app/context';
@@ -19,8 +19,8 @@ import { ReviewModal } from '@/components/Review';
 import { TextCounter,DescriptionField } from '@/components/Element';
 import { notFoundError,errorOne } from '@/custom';
 import { ReviewType } from '@/store/business';
-
-
+import { useBusiness } from '@/store/business';
+import { useRouter } from 'expo-router';
 
 
 const imageIconColor='white'
@@ -29,6 +29,8 @@ const imageWrapperSize=RFValue(40)
 type LinkInstanceType='Overview'|'Reviews'|'Services'
 
 const index = () => {
+  const {setBusiness,setTempCategoriesName}=useBusiness()
+  const router=useRouter()
  const {textColor,background,greyText,darkGreyText}=useGlobal()
  const {id}=useLocalSearchParams()
  const {user,setResponseMessage,setIsError}=useAuth()
@@ -47,7 +49,8 @@ const [ratingNo,setRatingNo]=useState<number>(0)
 
 type DataType={
   business:FinalBusinessType,
-  reviews:ReviewType[]
+  reviews:ReviewType[],
+  reviewNo:number
 }
 
 
@@ -139,10 +142,60 @@ const {
 
 const business= data?.business
 const reviews=data?.reviews
+const averageRating=(data?.business?.ratings ?? 0) / (data?.business?.noOfRatings ?? 0);
+type CategoryType={
+  categoryOne?:string,
+    categoryTwo?:string,
+      categoryThree?:string,
+
+
+
+}
+ 
 
 
 
 const handleClaim=()=>{
+
+   const categoriesOne=business?.categories?.categoryOne?._id
+  const categoriesTwo=business?.categories?.categoryTwo?._id
+    const categoriesThree=business?.categories?.categoryThree?._id
+const categoriesNameOne=business?.categories?.categoryOne?.name
+const categoriesNameTwo=business?.categories?.categoryTwo?.name
+const categoriesNameThree=business?.categories?.categoryThree?.name
+
+const categoryName={
+  categoryOne:categoriesNameOne?categoriesNameOne:undefined,
+    categoryTwo:categoriesNameTwo?categoriesNameTwo:undefined,
+        categoryThree:categoriesNameThree?categoriesNameThree:undefined
+}
+
+
+
+setTempCategoriesName(categoryName)
+
+
+const categories:CategoryType={
+
+  categoryOne:categoriesOne,
+    categoryTwo:categoriesTwo?categoriesTwo:undefined,
+        categoryThree:categoriesThree?categoriesThree:undefined
+
+
+}
+
+
+
+
+const newBusiness={...business,categories:categories}
+
+delete newBusiness._id
+delete newBusiness.ratings
+delete newBusiness.isVerified
+
+setBusiness(newBusiness)
+    
+router.push('/(tabs)/(create)/claim')
 
 }
 
@@ -371,7 +424,7 @@ if (isError){
 
             <View style={styles.imageLinkFirstLine}>
 
-                   <TouchableOpacity style={styles.iconWrapper}>
+                   <TouchableOpacity style={styles.iconWrapper} onPress={()=>router.back()}>
                      <MaterialCommunityIcons size={imageIconSize} color={imageIconColor}  name='chevron-left'/>
                    </TouchableOpacity>
                    <View style={{flexDirection:"row",}}>
@@ -430,9 +483,15 @@ if (isError){
     
          </View>
 
+            {
+              averageRating>0 && (
+                <>
+                 <Text style={{fontSize:RFValue(18),color:'white'}}>{averageRating} rating</Text>
 
-         <Text style={{fontSize:RFValue(18),color:'white'}}>{business?.ratings} reviews</Text>
-
+                </>
+              )
+            }
+        
         </View>
 
         <View style={{width:'100%',flexDirection:'row',marginVertical:RFValue(6),alignItems:"center"}}>

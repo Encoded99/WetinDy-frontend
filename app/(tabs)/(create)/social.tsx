@@ -16,7 +16,7 @@ import { useAuth } from '@/store/auth'
 const index = () => {
     const {setResponseMessage,setIsError,}=useAuth()
   const router=useRouter()
-  const {business,setBusiness}=useBusiness()
+  const {business,setBusiness,claimMode}=useBusiness()
   const [isSubmitClicked,setIsSubmitClicked]= useState<boolean>(false)
   const [isActive,setIsActive]=useState<boolean>(false);
   const [isLoading,setIsLoading]=useState<boolean>(false)
@@ -35,6 +35,18 @@ const skipFunction=()=>{
 
 
 const handleSubmit=async()=>{
+
+ if (claimMode){
+     router.push('/(tabs)/(create)/photo')
+    return
+  }
+
+
+
+
+
+
+
 
   if (!isActive) return
 setIsLoading(true)
