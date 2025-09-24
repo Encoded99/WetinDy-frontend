@@ -28,7 +28,7 @@ import { BusinessSkeletonLoader } from '@/components/ui/Loader'
 
 const {height}=Dimensions.get('window')
 
-type PaginatedResponse = {
+export type BusinessPaginatedResponse = {
   data: FinalBusinessType[];
   hasMore: boolean;
   page: number;
@@ -125,7 +125,7 @@ const fetchData = async ({
   pageParam: number;
 
 
-}): Promise<PaginatedResponse> => {
+}): Promise<BusinessPaginatedResponse> => {
 
   const url=`${apiUrl}/business/get-business?page=${pageParam}`
     const response = await api.get(url);
@@ -159,7 +159,7 @@ const {
   isLoading,
   isError:isBusinessError,
   refetch,
-} = useInfiniteQuery<PaginatedResponse, Error>({
+} = useInfiniteQuery<BusinessPaginatedResponse, Error>({
   queryKey: ['all-business-data', ],
   queryFn: ({ pageParam = 1 }) =>
     fetchData({
@@ -313,7 +313,8 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
       maxToRenderPerBatch={20} // 🟢 
       windowSize={10} // 🟢 
       removeClippedSubviews // 🟢 
-
+       onRefresh={refetch}
+       refreshing={isLoading}
 />
 
 

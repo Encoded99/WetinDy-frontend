@@ -200,7 +200,7 @@ type PaginatedResponse = {
 
 //router.push(`/(tabs)/(create)/(category)/${item._id}`)
 closeModal()
-router.push(`/(tabs)/(home)/${item._id}`)
+router.push(`/(tabs)/(home)/(category)/${item._id}`)
 
  }
  
@@ -309,6 +309,9 @@ if (typeof(id)==='string' && id){
 
 
 };
+
+
+
 
 
 
@@ -488,19 +491,33 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
    export const FieldSubCategoryComponent=({data,title,isLoading,isError,refetch}:{data:CategoryType[],title:string,isLoading:boolean,isError:boolean,refetch:()=>void})=>{
 
+  
 
-
-
+const router= useRouter()
 const {darkGreyText,greyText,textColor}=useGlobal()
 const [isModal,setIsModal] =useState<boolean>(false)
+
+
+
+
+const handlePress=async(item:string)=>{
+
+
+router.push(`/(tabs)/(home)/(category)/${item}`)
+
+ }
+ 
 
 
 const renderItem=({item}:{item:CategoryType})=>{
   return (
     <>
-    <View style={[styles.subCategoryButton,{borderColor:greyText}]}>
+    <Pressable style={[styles.subCategoryButton,{borderColor:greyText}]}
+    
+     onPress={()=>handlePress(item._id)}
+    >
          <Text style={styles.subBtnText}>{item.name}</Text>
-    </View>
+    </Pressable>
     </>
   )
 }
@@ -561,10 +578,10 @@ const renderItem=({item}:{item:CategoryType})=>{
       !isError  && !isLoading  && (
         <>
           <View style={styles.subCategoryHeadingContainer}>
+          
           <Text style={styles.subCategoryHeader}>
-            {title}
-          </Text>
-
+  {title.length > 20 ? `${title.slice(0, 20)}...` : title}
+</Text>
 
           {
             data?.length>0 && (

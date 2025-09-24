@@ -18,7 +18,7 @@ const Layout = () => {
       />
 
        <Stack.Screen
-                 name="[id]"
+                 name="(category)/[id]"
               options={{
                 headerShown: false,
                 headerStyle: {
