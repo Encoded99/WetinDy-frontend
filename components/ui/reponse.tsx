@@ -115,7 +115,59 @@ export const  CongratsResponse=(param:CongratsType)=>{
 }
 
 
+
+export const ShortResponseModal=()=>{
+
+  const {shortResponseMessage,setResponseMessage}=useAuth()
+
+const isMessage=shortResponseMessage!==''?true:false
+
+useEffect(()=>{
+
+},[])
+
+
+
+  return (
+    <>
+    <Modal
+       visible={isMessage}
+  
+       transparent={true}
+      >
+  <View style={styles.smallResponseModalContainer}>
+        <Text style={{color:'white',fontFamily:'Poppins-Bold',fontSize:RFValue(18)}}>{shortResponseMessage}</Text>
+    </View>
+
+      </Modal>
+  
+    </>
+  )
+
+}
+
+
+
+
+
+
 const styles=StyleSheet.create({
+
+smallResponseModalContainer:{
+  width:'92%',
+  position:"absolute",
+  bottom:"10%",
+  alignSelf:'center',
+  height:RFValue(50),
+  paddingHorizontal:'2%',
+  borderRadius:RFValue(10),
+  justifyContent:'flex-start',
+  alignItems:'center',
+  backgroundColor:"black"
+
+},
+
+
  responseOverlay:{
   width:width,
 

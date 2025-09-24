@@ -99,6 +99,8 @@ type UseAuthType={
    setIsError:(param:boolean)=>void,
    user:UserType,
    setUser:(value:UserType)=>void,
+   shortResponseMessage:string,
+   setShortResponseMessage:(param:string)=>void,
    
 }
 
@@ -130,7 +132,9 @@ export const useAuth=create<UseAuthType>((set)=>({
   isError:false,
    setIsError:(value)=>set({isError:value}),
    user:initialUser,
-   setUser:(value)=>set({user:value})
+   setUser:(value)=>set({user:value}),
+   shortResponseMessage:'',
+  setShortResponseMessage:(value)=>set({shortResponseMessage:value}),
 }))
 
 

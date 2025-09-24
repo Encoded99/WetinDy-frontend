@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { StyleSheet,Platform } from 'react-native';
 import  AppProvider  from './context';
 import { Slot } from 'expo-router';
-import { ResponseModal } from '@/components/ui/reponse';
+import { ResponseModal, } from '@/components/ui/reponse';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuth,useLogin } from '@/store/auth';
 import { api,apiUrl } from '@/functions/axios'; 
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 
@@ -56,8 +56,9 @@ useEffect(()=>{
 
 
   return (
+<GestureHandlerRootView style={styles.container}>
 
-   <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
  <AppProvider>
            <ResponseModal/>
           <Slot />
@@ -66,6 +67,9 @@ useEffect(()=>{
 
 
    </QueryClientProvider>
+
+</GestureHandlerRootView>
+   
              
         
  

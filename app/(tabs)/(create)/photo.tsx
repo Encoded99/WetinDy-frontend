@@ -58,7 +58,7 @@ setShowCongrats(false)
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images, // Fix mediaTypes option
     allowsEditing: true,
-    allowsMultipleSelection:user.premium? true:false,
+    allowsMultipleSelection:true,
     aspect: [4, 3],
     quality: 1,
   });
@@ -73,23 +73,32 @@ setShowCongrats(false)
     }
 
 
-  
+    let selectedImages = result.assets;
+
+    if (selectedImages.length > 3) {
+      alert('You can only select up to 3 images');
+      return
+    }
 
 
 
+let imageArray=[]
 
-
-
-  
-
-const imageArray= [
-  {
+for (const image of result.assets){
+   const object={
     cloudId:'',
-    url:result.assets[0].uri
-  },
-   
+    url:image.uri
+   }
 
-]
+   imageArray.push(object)
+
+}
+
+
+
+  
+
+
 
 setBusiness({image:imageArray})
 
@@ -164,6 +173,7 @@ setIsLoading(true)
   }
 
   catch(err:any){
+    console.log(err?.request)
     setResponseMessage('Error uploading Image')
     setIsError(true)
 
@@ -507,7 +517,7 @@ if (business.isPostedByOwner===false){
       return (
      
          <View style={styles.imageContainer} key={index}>
-     <Image source={{ uri: business.image[0].url }}  style={styles.image}
+     <Image source={{ uri: image.url }}  style={styles.image}
      resizeMode='cover'
      
      

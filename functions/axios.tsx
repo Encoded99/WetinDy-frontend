@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const local:string = 'http://192.168.0.3:8080';
+const local:string = 'http://192.168.0.2:8080';
 export const hosted:string = 'https://talezee-backend.onrender.com';
 export const apiUrl:string =local
 const localServerLess = 'http://192.168.0.2:3000';
@@ -16,7 +16,7 @@ export interface MultiPartAxiosConfig extends InternalAxiosRequestConfig {
 
 export const api = axios.create({
   baseURL: apiUrl,
-  timeout: 5000, 
+timeout: 60000,
 });
 
 // Function to wake up the server by hitting the wake-server endpoint

@@ -125,7 +125,7 @@ const styles=StyleSheet.create({
    btnContainer:{
     width:'100%',
     alignItems:'center',
-    marginTop:20,
+    marginVertical:20,
    },
    inputContainer:{
     width:"100%",

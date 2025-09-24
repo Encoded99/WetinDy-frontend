@@ -1,4 +1,4 @@
-import { View, Text,StyleSheet,ImageBackground,SafeAreaView,StatusBar,ScrollView, TouchableOpacity, findNodeHandle, Pressable, TextInput,NativeSyntheticEvent,NativeScrollEvent } from 'react-native'
+import { View, Text,StyleSheet,ImageBackground,SafeAreaView,StatusBar,ScrollView, TouchableOpacity, findNodeHandle, Pressable, TextInput,NativeSyntheticEvent,NativeScrollEvent,Linking,Alert, Share } from 'react-native'
 import React, { useState,useRef,useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import { api,apiUrl } from '@/functions/axios';
@@ -11,7 +11,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { BusinessType, FinalBusinessType } from '@/store/business'
 import { useAuth } from '@/store/auth';
-import { lightPrimary, primary } from '@/custom';
+import { lightPrimary, primary, title } from '@/custom';
 import { useGlobal } from '@/app/context';
 import { DayInfo } from '@/store/business';
 import { SubmitBtn } from '@/components/Element';
@@ -21,6 +21,18 @@ import { notFoundError,errorOne } from '@/custom';
 import { ReviewType } from '@/store/business';
 import { useBusiness } from '@/store/business';
 import { useRouter } from 'expo-router';
+import { PanGestureHandler, PanGestureHandlerGestureEvent,GestureHandlerRootView, FlatList  } from 'react-native-gesture-handler';
+
+import Animated, { runOnJS, useAnimatedGestureHandler,  useSharedValue, withSpring , 
+  useAnimatedStyle,
+  withTiming,} from 'react-native-reanimated';
+
+
+
+
+
+
+
 
 
 const imageIconColor='white'
@@ -28,32 +40,31 @@ const imageIconSize=RFValue(35)
 const imageWrapperSize=RFValue(40)
 type LinkInstanceType='Overview'|'Reviews'|'Services'
 
-const index = () => {
-  const {setBusiness,setTempCategoriesName}=useBusiness()
-  const router=useRouter()
- const {textColor,background,greyText,darkGreyText}=useGlobal()
- const {id}=useLocalSearchParams()
- const {user,setResponseMessage,setIsError}=useAuth()
- const [imageIndex,setImageIndex]=useState<number>(0)
- const [instance,setInstance]=useState<LinkInstanceType>('Overview')
- const [showFullDescription,setShowFullDescription]=useState<boolean>(false)
- const [reviewText,setReviewText]=useState<string>('')
-const [overviewY, setOverviewY] = useState(0);
-const [serviceY, setServiceY] = useState(0);
-const [reviewY, setReviewY] = useState(0);
-const [fixTab,setFixTab]=useState<boolean>(false)
-const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
-const [isPreviewLoading,setIsPreviewLoading]=useState<boolean>(false)
-const [isActive,setIsActive]=useState<boolean>(false)
-const [ratingNo,setRatingNo]=useState<number>(0)
+
+
+
+
 
 type DataType={
   business:FinalBusinessType,
   reviews:ReviewType[],
-  reviewNo:number
+  reviewNo:number,
+  doesBookMarkExist:boolean
 }
 
 
+
+
+
+
+
+
+
+
+
+
+const index = () => {
+const {id}=useLocalSearchParams()
 
 
 const fetchData = async (): Promise<DataType> => {
@@ -68,6 +79,44 @@ const url=`${apiUrl}/business/discover-business/${id}`
 
 
 
+
+const {
+    data,
+    isLoading,
+    isError,
+    refetch,
+    
+  } = useQuery({
+    queryKey: ['discovered-business',id],
+    queryFn: () => fetchData(),
+  });
+
+
+const SWIPE_THRESHOLD = 45;
+
+  const {setBusiness,setTempCategoriesName}=useBusiness()
+  const router=useRouter()
+ const {textColor,background,greyText,darkGreyText}=useGlobal()
+ const translateX = useSharedValue(0);
+ const {user,setResponseMessage,setIsError,setShortResponseMessage}=useAuth()
+ const [imageIndex,setImageIndex]=useState<number>(0)
+ const [instance,setInstance]=useState<LinkInstanceType>('Overview')
+ 
+ const [showFullDescription,setShowFullDescription]=useState<boolean>(false)
+ const [reviewText,setReviewText]=useState<string>('')
+const [overviewY, setOverviewY] = useState(0);
+const [serviceY, setServiceY] = useState(0);
+const [reviewY, setReviewY] = useState(0);
+const [fixTab,setFixTab]=useState<boolean>(false)
+const [isSubmitClicked,setIsSubmitClicked]=useState<boolean>(false)
+const [isPreviewLoading,setIsPreviewLoading]=useState<boolean>(false)
+const [isActive,setIsActive]=useState<boolean>(false)
+const [ratingNo,setRatingNo]=useState<number>(0)
+const [isSaved, setIsSaved] = useState<boolean>(true);
+
+
+
+
 const LinkData:LinkInstanceType[]=['Overview','Reviews','Services']
 
 
@@ -77,7 +126,7 @@ const handleClick=()=>{
 }
 
 
-type TabLinkType = 'Call' | 'Share' | 'Direction' | 'Website' | 'Save';
+type TabLinkType = 'Call' | 'Share' | 'Direction' | 'Website' | 'Save'|'Unsave';
 
 
 type TabLinkArrayType={
@@ -91,52 +140,16 @@ type TabLinkArrayType={
 
 
 
-const tabLink:TabLinkArrayType[] = [
-  {
-    _id: 1,
-    name: 'Call',
-    icon: 'phone', // phone icon
-    trigger: () => handleClick(),
-  },
-  {
-    _id: 2,
-    name: 'Share',
-    icon: 'link-variant', // share icon
-    trigger: () => handleClick(),
-  },
-  {
-    _id: 3,
-    name: 'Direction',
-    icon: 'arrow-right-circle', // directions / navigation icon
-    trigger: () => handleClick(),
-  },
-  {
-    _id: 4,
-    name: 'Website',
-    icon: 'web', // website / globe icon
-    trigger: () => handleClick(),
-  },
-  {
-    _id: 5,
-    name: 'Save',
-    icon: 'bookmark-outline', // save / bookmark icon
-    trigger: () => handleClick(),
-  },
-];
 
 
 
 
-const {
-    data,
-    isLoading,
-    isError,
-    refetch,
-    
-  } = useQuery({
-    queryKey: ['discovered-business',id],
-    queryFn: () => fetchData(),
-  });
+
+
+
+
+
+
 
 
 
@@ -198,7 +211,6 @@ setBusiness(newBusiness)
 router.push('/(tabs)/(create)/claim')
 
 }
-
 
 
 
@@ -330,6 +342,217 @@ finally{
 
 
 
+const phoneNumber= `${business?.prefix}${business?.telephone.slice(1)}`
+
+
+const makeCall = () => {
+    let phoneUrl = `tel:${phoneNumber}`;
+    Linking.canOpenURL(phoneUrl)
+      .then((supported) => {
+        if (!supported) {
+          Alert.alert('Error', 'Your device does not support calling');
+        } else {
+          return Linking.openURL(phoneUrl);
+        }
+      })
+      .catch((err) => console.error(err));
+  };
+
+
+
+
+  const handleShare = async () => {
+    try {
+      const message = `🌟 Discover ${business?.name} on ${title}! 
+Trusted, nearby, and highly rated — check it out now: ${''} 🚀`;
+
+      await Share.share({
+        message,
+      });
+    } catch (error) {
+      console.log('Error sharing:', error);
+    }
+  };
+
+
+
+const visitWebsite = () => {
+  const url = business?.website ? (business?.website.startsWith('http') ? business?.website : `https://${business?.website}`) : null;
+
+  if (!url) {
+    Alert.alert('Error', 'No website available for this business.');
+    return;
+  }
+
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        Alert.alert('Error', 'Your device cannot open this website.');
+      } else {
+        Linking.openURL(url);
+      }
+    })
+    .catch((err) => console.error('Error opening website:', err));
+};
+
+
+
+
+
+
+
+
+
+const  handleBookMark=async()=>{
+
+
+
+
+  try{
+
+
+     const data={
+    content:reviewText,
+    ratings:ratingNo
+   }
+
+
+   const url=`${apiUrl}/business/handle-bookmark/${business?._id}`
+
+  await api.patch(url,data);
+ 
+if (!isSaved){
+setShortResponseMessage('saved')
+}
+ 
+else{
+  setShortResponseMessage('unsaved')
+}
+
+
+setIsSaved(!isSaved)
+
+
+
+
+
+  }
+catch(err:any){
+
+   setIsError(true)
+
+
+  if (err?.response?.status==='404'){
+    setResponseMessage(notFoundError)
+    setIsPreviewLoading(false)
+    return
+  }
+
+    if (err?.response?.data){
+     
+    setResponseMessage(err?.response?.data)
+    setIsPreviewLoading(false)
+    return
+    }
+  
+    setResponseMessage(errorOne)
+
+}
+
+finally{
+  setIsPreviewLoading(false)
+  setIsSubmitClicked(false)
+}
+}
+
+
+
+
+
+
+
+
+
+
+const tabLink:TabLinkArrayType[] = [
+  {
+    _id: 1,
+    name: 'Call',
+    icon: 'phone', // phone icon
+    trigger: () => makeCall(),
+  },
+  {
+    _id: 2,
+    name: 'Share',
+    icon: 'link-variant', // share icon
+    trigger: () => handleShare(),
+  },
+  {
+    _id: 3,
+    name: 'Direction',
+    icon: 'arrow-right-circle', // directions / navigation icon
+    trigger: () => handleClick(),
+  },
+  {
+    _id: 4,
+    name: 'Website',
+    icon: 'web', // website / globe icon
+    trigger: () =>visitWebsite(),
+  },
+  {
+    _id: 5,
+    name: !isSaved?'Save':'Unsave',
+    icon: !isSaved?'bookmark-outline':'bookmark-off-outline', // save / bookmark icon
+    trigger: () => handleBookMark(),
+  },
+];
+
+
+
+
+
+
+
+
+
+
+
+  const gestureHandler = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
+    onActive: (event) => {
+      translateX.value = event.translationX;
+    },
+    onEnd: (event) => {
+ 
+if (!business?.image?.length) return;
+  
+      if (event.translationX > SWIPE_THRESHOLD && imageIndex > 0) {
+        translateX.value = withSpring(500); // Instant transition
+        // Update index immediately after crossing threshold
+     
+        runOnJS(setImageIndex)(imageIndex - 1);
+        translateX.value = 0; // Reset for the new card
+      } else if (event.translationX < -SWIPE_THRESHOLD && imageIndex < business?.image?.length - 1  ) {
+    
+        
+        translateX.value = withSpring(-500); // Instant transition
+        // Update index immediately after crossing threshold
+        runOnJS(setImageIndex)(imageIndex + 1);
+        translateX.value = 0; // Reset for the new card
+      } else {
+        translateX.value = withSpring(0); // Reset if threshold is not crossed
+      }
+    }
+  });
+
+
+
+
+
+
+
+
+
+
 useEffect(()=>{
 
   if ( reviewText){
@@ -346,8 +569,13 @@ useEffect(()=>{
 
 
 
+useEffect(()=>{
+  if (data?.doesBookMarkExist){
 
+    setIsSaved(true)
+  }
 
+},[])
 
 
 
@@ -419,8 +647,13 @@ if (isError){
   
      <ScrollView  ref={scrollRef}  onScroll={(event) => handleScroll(event)}  style={{flexGrow:1,backgroundColor:background,position:'relative'}} scrollEventThrottle={16}  >
                 
+          <GestureHandlerRootView >
 
-           <ImageBackground resizeMode='cover'  source={{uri:business?.image[imageIndex]?.url}} style={styles.image}>
+
+   <PanGestureHandler onGestureEvent={gestureHandler}>
+    <Animated.View style={styles.swipeContainer}>
+
+      <ImageBackground resizeMode='cover'  source={{uri:business?.image[imageIndex]?.url}} style={styles.image}>
 
             <View style={styles.imageLinkFirstLine}>
 
@@ -429,12 +662,14 @@ if (isError){
                    </TouchableOpacity>
                    <View style={{flexDirection:"row",}}>
                
-                   <TouchableOpacity style={[styles.iconWrapper,{marginRight:'0%',}]}>
-                     <MaterialCommunityIcons size={imageIconSize*0.8} color={imageIconColor}  name='bookmark-outline'/>
+                   <TouchableOpacity style={[styles.iconWrapper,{marginRight:'4%',}]} onPress={handleBookMark}>
+                     <MaterialCommunityIcons size={imageIconSize*0.8} color={imageIconColor}  name={!isSaved?'bookmark-outline':"bookmark-off-outline"}/>
                    </TouchableOpacity>
 
 
-                   <TouchableOpacity style={[styles.iconWrapper,{marginRight:'0%',}]}>
+                   <TouchableOpacity style={[styles.iconWrapper,{marginRight:'0%',}]}
+                   onPress={handleShare}
+                   >
                      <MaterialCommunityIcons size={imageIconSize*0.7} color={imageIconColor}  name='link-variant'/>
                    </TouchableOpacity>
 
@@ -452,7 +687,7 @@ if (isError){
           business?.image.map((item:any,index:number)=>{
            return (
             <>
-              <View style={[styles.circle,{backgroundColor:index===imageIndex?primary:'grey'}]}>
+              <View style={[styles.circle,{backgroundColor:index===imageIndex?primary:'white'}]}>
 
          </View>
             </>
@@ -470,11 +705,13 @@ if (isError){
          <View style={styles.starsContainer}>
 
           {
-           Array.from({length:3}).map((item,index)=>{
+           Array.from({length:5}).map((item,index)=>{
+
+const isThreshold= index+1<=averageRating
             return (
              
              <View style={styles.starContainer} key={index}>
-              <MaterialCommunityIcons size={RFValue(25)} color={'black'} name='star-outline'/>
+              <MaterialCommunityIcons size={RFValue(25)} color={isThreshold?'gold':'black'} name='star-outline'/>
           </View> 
             
             )
@@ -517,6 +754,16 @@ if (isError){
 
            </ImageBackground>
 
+    </Animated.View>
+
+   </PanGestureHandler>
+
+
+ 
+
+
+          </GestureHandlerRootView>
+          
 
 
         <View >
@@ -529,7 +776,7 @@ if (isError){
        {
         !fixTab && (
           <>
-           <View style={[styles.tabContainer, ]}>
+           <View style={[styles.tabContainer,{marginVertical:business?.isVerified?RFValue(20):0} ]}>
 
 
           {
@@ -574,7 +821,11 @@ if (isError){
      tabLink.map((item,index)=>{
       return (
       
-       <TouchableOpacity style={styles.secondTab}    key={index}>
+       <TouchableOpacity style={styles.secondTab}    key={index}
+       
+       onPress={item.trigger}
+       
+       >
          
           <View style={styles.secondTabBtn} >
           <MaterialCommunityIcons color={primary} size={RFValue(20)} name={item.icon}/>
@@ -630,7 +881,7 @@ if (isError){
 <View style={[styles.overOperationLine,{borderTopColor:greyText}]}>
   <MaterialCommunityIcons color={primary} size={RFValue(20)} name='phone'/>
 
-   <Text style={[styles.lineText,{color:textColor,marginLeft:10}]}>{user?.prefix} {business?.telephone.slice(1,business?.telephone.length)}</Text>
+   <Text style={[styles.lineText,{color:textColor,marginLeft:10}]}>{business?.prefix} {business?.telephone.slice(1,business?.telephone.length)}</Text>
            
 </View>
 
@@ -830,10 +1081,17 @@ if (isError){
 const imagePadding='3%'
 
 const styles= StyleSheet.create({
+
+swipeContainer:{
+   width:"100%",
+    height:RFValue(400),
+},
+
+
  image:{
   width:"100%",
  
-  height:RFValue(400),
+  height:'100%',
   justifyContent:'space-between'
  
  },
@@ -871,7 +1129,8 @@ const styles= StyleSheet.create({
  circle:{
   width:RFValue(15),
   height:RFValue(15),
-  borderRadius:RFValue(15)
+  borderRadius:RFValue(15),
+  marginRight:RFValue(10)
  },
  nameHeader:{
   fontSize:RFValue(30),
@@ -955,7 +1214,7 @@ secondTab:{
 },
 
 secondTabBtn:{
- borderRadius:RFValue(15),
+ borderRadius:RFValue(17),
  marginHorizontal: RFValue(5),
  justifyContent:"center",
  alignItems:'center',

@@ -16,7 +16,7 @@ export const AuthLayOut=({children}:{children:React.ReactNode})=>{
     <>
 
 
-<SafeAreaView  style={{width:'100%',flex:1,paddingTop:standardPaddingTop,backgroundColor:background}}>
+<SafeAreaView  style={{width:'100%',flex:1,paddingTop:standardPaddingTop,backgroundColor:background,padding:percentagePadding}}>
  <StatusBar
           barStyle="dark-content" // or 'light-content'
           backgroundColor={background}  // Android only
@@ -25,9 +25,10 @@ export const AuthLayOut=({children}:{children:React.ReactNode})=>{
 <View style={[styles.container,{backgroundColor:background}]}>
        {children}
     </View>
+
 </SafeAreaView>
     
-    
+   
     
     </>
   )
@@ -92,7 +93,7 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
   return (
     <>
 
-<SafeAreaView  style={{width:'100%',flex:1,backgroundColor:background}}>
+<SafeAreaView  style={{width:'100%',flex:1,backgroundColor:background,paddingTop:standardPaddingTop,}}>
     <StatusBar
           barStyle="dark-content" // or 'light-content'
           backgroundColor={background}  // Android only

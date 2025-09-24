@@ -42,8 +42,10 @@ try{
 
   if (token){
    setIsLoggedIn(true)
-  //router.push('/(tabs)/(home)/(discover)/68cfd7f60369efdbb129a5a6')
-  router.push('/(tabs)/(create)')
+  //router.push('/(tabs)/(home)/(discover)/68cfee2fac7c72bde55f0911')
+  //router.push('/(tabs)/(create)')
+  //router.push('/(auth)')
+  router.push('/(tabs)/(home)')
   }
 
   else{ 

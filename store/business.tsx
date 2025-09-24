@@ -233,7 +233,8 @@ type AddedType={
    },
    ratings:number,
    isVerified:boolean,
-   noOfRatings:number
+   noOfRatings:number,
+   prefix:string
 }
 
 export type FinalBusinessType= Omit<BusinessType, 'categories'> & AddedType

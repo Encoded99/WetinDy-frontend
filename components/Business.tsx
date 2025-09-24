@@ -17,6 +17,9 @@ const {height}=Dimensions.get('window')
 
 export const BusinessRenderItem=({item,textColor}:{item:FinalBusinessType,textColor:string})=>{
 
+const ratings=Math.round(item.ratings/item.noOfRatings)
+
+
    const router=useRouter()
 
 const handlePress=()=>{
@@ -44,26 +47,29 @@ const handlePress=()=>{
      
 
              <View style={styles.arrowLinkContainer}>
-                     <MaterialCommunityIcons 
-  name="star" 
-  size={25} 
-  color="gold" 
-/>
-    <MaterialCommunityIcons 
-  name="star" 
-  size={25} 
-  color="gold" 
-/>
-    <MaterialCommunityIcons 
-  name="star" 
-  size={25} 
-  color="gold" 
-/>
-  <MaterialCommunityIcons 
-  name="star" 
-  size={25} 
-  color="grey" 
-/>
+
+
+       {
+         Array.from({length:5}).map((star,index)=>{
+
+            const isThreshold= index+1<=ratings
+            return (
+               <View key={index}>
+              <MaterialCommunityIcons
+              
+              name="star" 
+             size={RFValue(25)} 
+             color={isThreshold?"gold":"grey"}
+              
+              
+              
+              /> 
+               </View>
+            )
+         })
+       }
+
+
              </View>
 
 

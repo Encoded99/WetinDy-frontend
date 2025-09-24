@@ -103,14 +103,14 @@ const styles= StyleSheet.create({
     flexDirection:'row',
     justifyContent:'flex-start',
   
-  
+   width:"100%"
 
   
   },
 
  coloredHeaderText:{
   fontSize:RFValue(20),
-
+ 
   fontFamily:'Poppins-Bold'
  },
 

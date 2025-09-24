@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router'
 
 const claim = () => {
   const router=useRouter()
-const {setBusiness,setClaimMode}=useBusiness()
+const {setBusiness,setClaimMode,business}=useBusiness()
 const isActive=true
 const handleSubmit=()=>{
 
@@ -25,7 +25,7 @@ router.push('/(tabs)/(create)/name')
   return (
     <InnerLayOut>
    <LightHeader text={''}/>
-   <ColoredHeader text='Are you sure you are the owner of Tony Enterprise?' type='black'/>
+   <ColoredHeader text={`Are you sure you are the owner of ${business.name}?`} type='black'/>
 
  <View style={styles.contentContainer}>
 
