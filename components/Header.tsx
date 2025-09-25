@@ -103,8 +103,8 @@ const styles= StyleSheet.create({
     flexDirection:'row',
     justifyContent:'flex-start',
   
-   width:"100%"
-
+   width:"100%",
+   marginBottom:RFValue(10)
   
   },
 

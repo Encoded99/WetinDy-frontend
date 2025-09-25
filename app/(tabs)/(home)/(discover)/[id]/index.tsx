@@ -117,7 +117,7 @@ const [isSaved, setIsSaved] = useState<boolean>(true);
 
 
 
-const LinkData:LinkInstanceType[]=['Overview','Reviews','Services']
+const LinkData:LinkInstanceType[]=['Overview','Services','Reviews']
 
 
 
@@ -135,19 +135,6 @@ type TabLinkArrayType={
  trigger:()=>void,
  icon:React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -213,13 +200,6 @@ router.push('/(tabs)/(create)/claim')
 }
 
 
-
-
-
-
-
-
-
 const date= new Date().getDay()
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -253,12 +233,21 @@ const scrollToSection = (section: LinkInstanceType) => {
 
 const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
   const yOffset = event.nativeEvent.contentOffset.y; // current vertical scroll
-
+   
   // Example: call function when scrolled past 300
   if (yOffset >= 300) {
    setFixTab(true)
   } else{
     setFixTab(false)
+  }
+ if (yOffset >= overviewY && yOffset < serviceY) {
+    setInstance('Overview');
+  } 
+  else if (yOffset >= serviceY && yOffset < reviewY) {
+    setInstance('Services');
+  } 
+  else if (yOffset >= reviewY) {
+    setInstance('Reviews');
   }
 };
 
@@ -501,8 +490,8 @@ const tabLink:TabLinkArrayType[] = [
   },
   {
     _id: 5,
-    name: !isSaved?'Save':'Unsave',
-    icon: !isSaved?'bookmark-outline':'bookmark-off-outline', // save / bookmark icon
+    name: isSaved?'Save':'Unsave',
+    icon: isSaved?'bookmark-outline':'bookmark-off-outline', // save / bookmark icon
     trigger: () => handleBookMark(),
   },
 ];
@@ -609,16 +598,25 @@ if (isError){
    <>
    <CircleLoader isLoading={isPreviewLoading}/>
    <SafeAreaView style={{flex:1,position:'relative'}}>
-      <StatusBar translucent backgroundColor={fixTab?greyText:'transparent'} barStyle="light-content" />
+      <StatusBar translucent backgroundColor={fixTab?background:'transparent'} barStyle="light-content" />
        
 
   
 
 
 
-<View style={{width:'100%',padding:percentagePadding,marginTop:RFValue(20),position:"absolute",top:0,zIndex:fixTab?1:0,backgroundColor:greyText}}>
-   <View style={[styles.tabContainer, ]}>
+<View style={[styles.topTabContainer,{zIndex:fixTab?1:0,backgroundColor:background}]}>
 
+   <View style={{flexDirection:"row",marginVertical:RFValue(15),alignItems:"center"}}>
+      <MaterialCommunityIcons  color={textColor} size={RFValue(35)} name='chevron-left'
+      
+      onPress={()=>router.back()}
+      />
+
+      <Text numberOfLines={1} style={{color:textColor,fontFamily:'Poppins-Bold',fontSize:RFValue(20)}}>{business?.name}</Text>
+   </View>
+   <View style={[styles.tabContainer, ]}>
+       
 
           {
            LinkData.map((item)=>{
@@ -687,7 +685,7 @@ if (isError){
                    <View style={{flexDirection:"row",}}>
                
                    <TouchableOpacity style={[styles.iconWrapper,{marginRight:'4%',}]} onPress={handleBookMark}>
-                     <MaterialCommunityIcons size={imageIconSize*0.8} color={imageIconColor}  name={!isSaved?'bookmark-outline':"bookmark-off-outline"}/>
+                     <MaterialCommunityIcons size={imageIconSize*0.8} color={imageIconColor}  name={isSaved?'bookmark-outline':"bookmark-off-outline"}/>
                    </TouchableOpacity>
 
 
@@ -722,8 +720,23 @@ if (isError){
        
 
         </View>
-       <Text numberOfLines={2} style={styles.nameHeader}>{business?.name}</Text>
 
+
+        <View style={{flexDirection:"row",alignItems:'center',width:'100%'}}>
+          <View style={{width:"70%"}}>
+ <Text numberOfLines={2} style={styles.nameHeader}>{business?.name}</Text>
+          </View>
+            
+            {
+              business?.isVerified && (
+                <>
+                <MaterialCommunityIcons style={{marginLeft:"1%"}} name="check-circle" color="green" size={34} /> 
+                </>
+              )
+            }
+      
+        </View>
+   
       
         <View style={styles.ratingLine}>
          <View style={styles.starsContainer}>
@@ -797,36 +810,7 @@ const isThreshold= index+1<=averageRating
 
 
        <View style={{padding:percentagePadding}}>
-
-
-
-
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-      
           <View style={[styles.tabContainer,{opacity:!fixTab?1:0} ]}
           
           
@@ -949,7 +933,9 @@ const isThreshold= index+1<=averageRating
 <View style={[styles.overOperationLine,{borderTopColor:greyText}]}>
   <MaterialCommunityIcons color={primary} size={RFValue(20)} name='clock-outline'/>
   <Text style={[styles.imageText,{color:isOpen?'green':'red',fontFamily:"Poppins-Bold",marginHorizontal:'3%'}]}>{isOpen?'OPEN':'CLOSE'} </Text>
-   <Text style={[styles.lineText,{color:textColor}]}>{isOpen?`. Closes ${gottenDay?.closeTime}`:``}.</Text>
+ <Text style={[styles.lineText,{color:textColor}]}>
+  {isOpen ? `. Closes ${gottenDay?.closeTime}` : ''}
+</Text>
            
 </View>
 
@@ -1240,6 +1226,29 @@ swipeContainer:{
   fontFamily:'Poppins-Regular',
   color:'white'
  },
+
+
+topTabContainer:{
+ 
+
+
+ width:'100%',
+ padding:percentagePadding,
+ position:"absolute",
+ top:0,
+  // Add shadow for iOS
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+
+  // Add elevation for Android
+  elevation: 3,
+
+
+ },
+
+
  tabContainer:{
   width:"100%",
   flexDirection:"row",

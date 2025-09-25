@@ -880,7 +880,7 @@ export const TextCounter: React.FC<TextCounterProps> = ({ text, maxLength, onExc
 export const standardHeight=RFValue(50)
 export const percentagePadding='4%'
 export const standardBorderRadius=10
-export const standardPaddingTop=30
+export const standardPaddingTop=20
 export const skipBtnMargin=RFValue(0)
 
 const styles = StyleSheet.create({
