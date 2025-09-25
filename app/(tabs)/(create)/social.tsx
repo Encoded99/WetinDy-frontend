@@ -250,7 +250,7 @@ const styles=StyleSheet.create({
    btnContainer:{
     width:'100%',
     alignItems:'center',
-    marginVertical:RFValue(30)
+ 
    },
    modal:{
     width:'100%',

@@ -2,7 +2,7 @@ import { View, Text,StyleSheet,FlatList,Dimensions,SafeAreaView,StatusBar } from
 
 import { primary,lightPrimary } from '@/custom'
 import { standardHeight,standardBorderRadius,standardPaddingTop } from '@/components/Element'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { useGlobal } from '@/app/context'
@@ -14,7 +14,7 @@ import { FieldSubCategoryComponent } from '@/components/category'
 import { ActivityIndicator } from 'react-native'
 import { ErrorComponent } from '@/components/Error'
 import { FinalBusinessType } from '@/store/business'
-
+import { useBusinessSearch } from '@/functions/business'
 import { BusinessRenderItem } from '@/components/Business'
 import { percentagePadding } from '@/components/Element'
 import { BusinessSkeletonLoader } from '@/components/ui/Loader'
@@ -43,19 +43,48 @@ export type BusinessPaginatedResponse = {
 
 
 const index = () => {
+  const {searchData,setSearchData,search}=useBusinessSearch()
    const  {popularCategories,setPopularCategories} =useCategory()
   const  {textColor,darkGreyText,background} =useGlobal()
    const [text,setText]=useState<string>('')
    const [currentPage,setCurrentPage]=useState<number>(1)
 
    const handleCancel=()=>{
-
+       setSearchData([])
+       setText('')
    }
 
-   const handleSearch=()=>{
 
-   }
 
+
+
+
+
+
+
+const handleSearch=async()=>{
+  
+   
+     await search(text)
+      
+    
+     }
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 const searchParam={
   text,
   setText,
@@ -64,6 +93,13 @@ const searchParam={
   placeholder:'Search for Stores'
 }
 
+
+useEffect(()=>{
+ 
+    if (text){
+  handleSearch()
+    }
+  },[text])
 
 
 
@@ -206,7 +242,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
        <MaterialCommunityIcons color={textColor} size={RFValue(25)} name='bell-outline'/>
 
       </View>
-
+<SearchField {...searchParam}/>
  
 
 
@@ -217,7 +253,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
  <FlatList
 
     keyExtractor={(item, index) => item._id.toString()}
-           data={cleanedData}
+           data={ text?searchData : cleanedData}
        renderItem={({ item }) => (
     <BusinessRenderItem item={item} textColor={textColor}  
     />
@@ -236,7 +272,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
  
    return (
    <>
-     <SearchField {...searchParam}/>
+     
 <FieldSubCategoryComponent refetch={subCategoryRefetch}  isError={isPopularError}  isLoading={isSubCategoryLoading} title={'Category'} data={gottenSubCategory}/> 
  <View style={{width:'100%',marginTop:RFValue(25)}}>
 <Text style={{fontSize:RFValue(18),fontFamily:'Poppins-Bold',color:primary}}>Business Near You</Text>

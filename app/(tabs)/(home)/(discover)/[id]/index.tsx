@@ -608,12 +608,15 @@ if (isError){
   return (
    <>
    <CircleLoader isLoading={isPreviewLoading}/>
-   <SafeAreaView style={{flex:1,}}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-       {
-        fixTab && (
-          <>
-          <View style={{width:'100%',padding:percentagePadding,marginTop:RFValue(20)}}>
+   <SafeAreaView style={{flex:1,position:'relative'}}>
+      <StatusBar translucent backgroundColor={fixTab?greyText:'transparent'} barStyle="light-content" />
+       
+
+  
+
+
+
+<View style={{width:'100%',padding:percentagePadding,marginTop:RFValue(20),position:"absolute",top:0,zIndex:fixTab?1:0,backgroundColor:greyText}}>
    <View style={[styles.tabContainer, ]}>
 
 
@@ -637,15 +640,36 @@ if (isError){
         </View>
           </View>
         
-          </>
-        )
-       }
+
+
 
 
 
 
   
-     <ScrollView  ref={scrollRef}  onScroll={(event) => handleScroll(event)}  style={{flexGrow:1,backgroundColor:background,position:'relative'}} scrollEventThrottle={16}  >
+     <ScrollView  ref={scrollRef}  onScroll={(event) => handleScroll(event)}  style={{flexGrow:1,backgroundColor:background,}} scrollEventThrottle={16}  >
+
+
+
+
+
+
+
+
+
+
+        
+         
+
+
+
+
+
+
+
+
+
+
                 
           <GestureHandlerRootView >
 
@@ -773,10 +797,43 @@ const isThreshold= index+1<=averageRating
 
 
        <View style={{padding:percentagePadding}}>
-       {
-        !fixTab && (
-          <>
-           <View style={[styles.tabContainer,{marginVertical:business?.isVerified?RFValue(20):0} ]}>
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      
+          <View style={[styles.tabContainer,{opacity:!fixTab?1:0} ]}
+          
+          
+              pointerEvents={fixTab ? "none" : "auto"}
+          
+          
+          >
 
 
           {
@@ -797,9 +854,28 @@ const isThreshold= index+1<=averageRating
 
       
         </View>
-          </>
-        )
-       }
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1169,6 +1245,8 @@ swipeContainer:{
   flexDirection:"row",
   justifyContent:"flex-start",
   alignItems:"center",
+
+ 
 
  },
 

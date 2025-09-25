@@ -19,6 +19,7 @@ import { standardPaddingTop,percentagePadding } from '@/components/Element'
 import { BusinessSkeletonLoader } from '@/components/ui/Loader'
 import { BusinessRenderItem } from '@/components/Business'
 import { ErrorComponent } from '@/components/Error'
+import { useBusinessSearch } from '@/functions/business'
 
 
 
@@ -27,19 +28,33 @@ const index = () => {
 
    const {id}=useLocalSearchParams()
 
-
+      const {searchData,setSearchData,search}   =useBusinessSearch()
 
    const  {popularCategories,setPopularCategories} =useCategory()
   const  {textColor,darkGreyText,background} =useGlobal()
    const [text,setText]=useState<string>('')
  const [currentPage,setCurrentPage]=useState<number>(1)
+
+
+
+
    const handleCancel=()=>{
-
+       setSearchData([])
+       setText('')
    }
 
-   const handleSearch=()=>{
 
-   }
+
+
+ 
+const handleSearch=async()=>{
+  
+   
+     await search(text)
+      
+    
+     }
+   
 
 const searchParam={
   text,
@@ -68,6 +83,13 @@ const url=`${apiUrl}/categories/get-popular-sub-categories/${id}`
 };
 
 
+
+React.useEffect(()=>{
+ 
+    if (text){
+  handleSearch()
+    }
+  },[text])
 
 
 
@@ -163,16 +185,6 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
     <>
     
-
-
-
-  
-    
-
-
-  
-
-
   <SafeAreaView  style={{backgroundColor:background,paddingTop:standardPaddingTop,flex:1,padding:percentagePadding}}>
 
 
@@ -181,12 +193,12 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
         backgroundColor={background}  // Android only
       />
 <LightHeader text={''}/>
-
+  <SearchField {...searchParam}/>
 
 <FlatList
 
     keyExtractor={(item, index) => item._id.toString()}
-           data={cleanedData}
+            data={ text?searchData : cleanedData}
        renderItem={({ item }) => (
     <BusinessRenderItem item={item} textColor={textColor}  
     />
@@ -205,10 +217,17 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
  
    return (
    <>
-     <SearchField {...searchParam}/>
+   
 
 
-<FieldSubCategoryComponent refetch={subCategoryRefetch} isError={isPopularError} isLoading={isSubCategoryLoading} title={gottenSubCategory?.categoryInfo?.name} data={gottenSubCategory?.subCategories}/>
+{
+gottenSubCategory?.subCategories?.length>0 &&(
+  <>
+  <FieldSubCategoryComponent refetch={subCategoryRefetch} isError={isPopularError} isLoading={isSubCategoryLoading} title={gottenSubCategory?.categoryInfo?.name} data={gottenSubCategory?.subCategories}/>
+  </>
+)
+}
+
    
 
 

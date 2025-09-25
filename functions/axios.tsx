@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const local:string = 'http://192.168.0.2:8080';
+const local:string = 'http://192.168.0.4:8080';
 export const hosted:string = 'https://talezee-backend.onrender.com';
 export const apiUrl:string =local
 const localServerLess = 'http://192.168.0.2:3000';

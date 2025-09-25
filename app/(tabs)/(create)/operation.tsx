@@ -452,7 +452,7 @@ scrollDateContainer:{
 
 bottomContainer:{
   borderTopWidth:1,
-  paddingVertical:RFValue(10),
+
   justifyContent:'center',
  
 }

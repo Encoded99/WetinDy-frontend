@@ -51,17 +51,12 @@ export const InnerLayOut=({children}:{children:React.ReactNode})=>{
         />
     
 
-      <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS uses padding, Android uses height
-          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // Adjust if header overlaps input
-        >
+      
 
      
 <ScrollView
     style={styles.innerContainer}
     contentContainerStyle={{ flexGrow: 1 }}
-    keyboardShouldPersistTaps="handled"
   >
 
       {children}
@@ -71,8 +66,7 @@ export const InnerLayOut=({children}:{children:React.ReactNode})=>{
 
       
 
-        </KeyboardAvoidingView>
-
+   
 
 </SafeAreaView>
     
@@ -102,12 +96,7 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
 
 
 
-  <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"} // iOS uses padding, Android uses height
-          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // Adjust if header overlaps input
-        >
-
+ 
         
              
  <View style={[styles.innerContainer]}>
@@ -118,7 +107,7 @@ export const InnerLayOutWithOutScroll=({children}:{children:React.ReactNode})=>{
 
       
 
-        </KeyboardAvoidingView>
+   
 
 
 </SafeAreaView>
@@ -150,8 +139,7 @@ const styles= StyleSheet.create({
     innerContainer:{
     width:"100%",
     padding:percentagePadding,
-    paddingBottom:0,
-    flex:1,
+    flex:1
 
 
   },

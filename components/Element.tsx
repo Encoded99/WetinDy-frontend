@@ -739,6 +739,8 @@ export const SearchField=React.memo((params:SearchFieldType)=>{
   
   
 
+
+  
   return(
     <>
 
@@ -879,6 +881,7 @@ export const standardHeight=RFValue(50)
 export const percentagePadding='4%'
 export const standardBorderRadius=10
 export const standardPaddingTop=30
+export const skipBtnMargin=RFValue(0)
 
 const styles = StyleSheet.create({
 
@@ -1115,6 +1118,7 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     justifyContent:'space-between',
     alignItems:'center',
+    marginVertical:RFValue(20)
   },
   skipText:{
     fontSize:RFValue(18),
