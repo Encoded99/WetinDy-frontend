@@ -174,7 +174,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
 
 
 
-
+const globalValues = useGlobal();
 
 
 
@@ -200,7 +200,7 @@ const cleanedData = data?.pages.flatMap((page) => page.data) || [];
     keyExtractor={(item, index) => item._id.toString()}
             data={ text?searchData : cleanedData}
        renderItem={({ item }) => (
-    <BusinessRenderItem item={item} textColor={textColor}  
+    <BusinessRenderItem item={item} global={globalValues}  
     />
 )}
 

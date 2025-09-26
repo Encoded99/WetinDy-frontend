@@ -1,4 +1,4 @@
-import { View, Text,StyleSheet,ImageBackground,SafeAreaView,StatusBar,ScrollView, TouchableOpacity, findNodeHandle, Pressable, TextInput,NativeSyntheticEvent,NativeScrollEvent,Linking,Alert, Share } from 'react-native'
+import { View, Text,StyleSheet,ImageBackground,SafeAreaView,StatusBar,ScrollView, TouchableOpacity, findNodeHandle, Pressable, TextInput,NativeSyntheticEvent,NativeScrollEvent,Linking,Alert, Share,Animated as NativeAnimated,Platform,UIManager,LayoutAnimation } from 'react-native'
 import React, { useState,useRef,useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query';
 import { api,apiUrl } from '@/functions/axios';
@@ -22,11 +22,11 @@ import { ReviewType } from '@/store/business';
 import { useBusiness } from '@/store/business';
 import { useRouter } from 'expo-router';
 import { PanGestureHandler, PanGestureHandlerGestureEvent,GestureHandlerRootView, FlatList  } from 'react-native-gesture-handler';
-
 import Animated, { runOnJS, useAnimatedGestureHandler,  useSharedValue, withSpring , 
   useAnimatedStyle,
-  withTiming,} from 'react-native-reanimated';
+  withTiming,interpolateColor} from 'react-native-reanimated';
 
+import * as Animatable from 'react-native-animatable';
 
 
 
@@ -566,6 +566,23 @@ useEffect(()=>{
 
 },[])
 
+  const slideAnim = useRef(new NativeAnimated.Value(0)).current;
+useEffect(() => {
+    NativeAnimated.timing(slideAnim, {
+      toValue: fixTab ? 1 : 0,
+      duration: 300, // animation duration in ms
+      useNativeDriver: true, // use native driver for better performance
+    }).start();
+  }, [fixTab]);
+
+  // Interpolate values for translation and opacity
+  const translateY = slideAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-50, 0], // slide down from -50 to 0
+  });
+
+
+
 
 
 
@@ -605,7 +622,7 @@ if (isError){
 
 
 
-<View style={[styles.topTabContainer,{zIndex:fixTab?1:0,backgroundColor:background}]}>
+<NativeAnimated.View style={[styles.topTabContainer,{zIndex:fixTab?1:0,backgroundColor:background,   transform: [{ translateY }],}]}>
 
    <View style={{flexDirection:"row",marginVertical:RFValue(15),alignItems:"center"}}>
       <MaterialCommunityIcons  color={textColor} size={RFValue(35)} name='chevron-left'
@@ -619,16 +636,26 @@ if (isError){
        
 
           {
-           LinkData.map((item)=>{
-            return (
-        
-                <TouchableOpacity style={[styles.tabBtn, {backgroundColor:instance===item ? primary:lightPrimary}]} key={item}
-                onPress={() => scrollToSection(item)}
-                
-                >
-            <Text style={[styles.tabBtnText,{color:instance===item?'white':primary}]}>{item}</Text>
-         </TouchableOpacity>
+           LinkData.map((item,index)=>{
 
+   
+            return (
+         <Animatable.View
+    key={item}
+    animation={instance === item ? { 0: { backgroundColor: lightPrimary }, 1: { backgroundColor: primary } } : { 0: { backgroundColor: primary }, 1: { backgroundColor: lightPrimary } }}
+    duration={1000} // 1 second
+
+
+style={[styles.tabBtn,]} 
+    
+  >
+    <TouchableOpacity
+      onPress={() => scrollToSection(item)}
+      style={{ paddingHorizontal: 10, paddingVertical: 5 }}
+    >
+      <Text style={[styles.tabBtnText,{color:instance===item?'white':primary}]}>{item}</Text>
+    </TouchableOpacity>
+  </Animatable.View>
              
             )
            })
@@ -636,7 +663,7 @@ if (isError){
 
       
         </View>
-          </View>
+          </NativeAnimated.View>
         
 
 

@@ -4,6 +4,8 @@ import { RFValue } from 'react-native-responsive-fontsize'
 import { MaterialCommunityIcons,Ionicons } from '@expo/vector-icons'
 import { FinalBusinessType } from '@/store/business'
 import { useRouter } from 'expo-router'
+import { useGlobal } from '@/app/context'
+import { percentagePadding } from './Element'
 
 
 
@@ -15,7 +17,7 @@ const {height}=Dimensions.get('window')
 
 
 
-export const BusinessRenderItem=({item,textColor}:{item:FinalBusinessType,textColor:string})=>{
+export const BusinessBannerItem=({item,textColor}:{item:FinalBusinessType,textColor:string})=>{
 
 const ratings=Math.round(item.ratings/item.noOfRatings)
 
@@ -99,6 +101,158 @@ const handlePress=()=>{
 
 
 
+interface GlobalContextType {
+  background: string;
+  greyBackground: string;
+  textColor: string;
+  greyText: string;
+  darkGreyText: string;
+  setMode: React.Dispatch<React.SetStateAction<'light' | 'dark'>>;
+}
+
+
+
+
+
+
+
+
+
+export const BusinessRenderItem=({item,global}:{item:FinalBusinessType,global:GlobalContextType})=>{
+
+   const {textColor,darkGreyText}=global
+
+   
+
+const ratings=Math.round(item.ratings/item.noOfRatings)
+
+
+   const router=useRouter()
+
+const handlePress=()=>{
+   router.push(`/(tabs)/(home)/(discover)/${item._id}`)
+}
+
+ return (
+  <>
+        <Pressable
+        style={[styles.modalContainer,]}
+        onPress={handlePress}
+        >
+        <Image style={styles.modalImage}
+           source={{ uri: item?.image[2]?.url }}
+        
+        
+        />
+
+        <View style={styles.modalBottom}>
+           <View style={styles.firstBottomLine}>
+
+              <View style={styles.modalStarContainer}>
+                    <View style={{maxWidth:"80%"}}>
+                <Text numberOfLines={1} style={[styles.headerName,{color:textColor}]}>{item.name}</Text>
+                    </View>
+                   
+                   <MaterialCommunityIcons style={{marginLeft:"2%"}}  size={RFValue(20)} color={'green'} name='check-circle'/>
+              </View>
+          
+
+
+
+           <View style={styles.modalStarContainer}>
+
+
+        {
+         Array.from({length:5}).map((star,index)=>{
+
+            const isThreshold= index+1<=ratings
+            return (
+               <View key={index}>
+              <MaterialCommunityIcons
+              
+              name="star" 
+             size={RFValue(20)} 
+             color={isThreshold?"gold":"grey"}
+              
+              
+              
+              /> 
+               </View>
+            )
+         })
+       }
+       {
+         ratings>0 && (
+            <>
+           <Text style={[styles.ratingText, {color:textColor}]}>{ratings}</Text> 
+            </>
+         )
+       }
+     
+       
+          <Text style={[styles.reviewText, {color:darkGreyText}]}>{`(${item.noOfRatings} reviews)`}</Text>
+
+
+              
+
+           </View>
+
+           <View style={styles.modalStarContainer}>
+
+             <MaterialCommunityIcons
+              
+            name='map-marker'
+             size={RFValue(18)} 
+             color={textColor}
+
+              />
+        
+      
+       
+          <Text style={[styles.reviewText, {color:textColor,fontFamily:"Poppins-Bold"}]}>{item.address.city}</Text>
+
+
+              
+
+           </View>
+
+           </View>
+
+           
+           
+
+        </View>
+
+
+        </Pressable>
+      
+        
+
+  
+    
+  
+  </>
+ )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -106,6 +260,99 @@ const handlePress=()=>{
 
 const standardBorder=10
 export const styles=StyleSheet.create({
+
+
+
+   modalContainer:{
+      width:'100%',
+     
+    borderRadius: standardBorder,       
+    justifyContent:"flex-start",
+ 
+     marginVertical:RFValue(10), 
+
+ shadowColor: '#000',         // shadow color
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.15,          // adjust for lighter/darker shadow
+  shadowRadius: 2,
+borderWidth: 0.5,
+  // Android shadow
+ 
+borderColor: 'rgba(0,0,0,0.2)', 
+   },
+
+
+
+
+
+ modalImage:{
+      width:'100%',
+borderTopLeftRadius: standardBorder, 
+borderTopRightRadius: standardBorder,   
+
+   alignSelf:'center',
+    height:RFValue(200),
+   },
+
+
+
+  modalBottom:{
+   width:'100%',
+ padding:'2%',
+   flexDirection:"row",
+   justifyContent:'center',
+   alignItems:"center",
+borderBottomLeftRadius: standardBorder, 
+borderBottomRightRadius: standardBorder, 
+  },
+
+
+
+
+ headerName:{
+   fontSize:RFValue(15),
+   fontFamily:"Poppins-Bold"
+
+ },
+
+
+
+  firstBottomLine:{
+   flex:1,
+
+
+  },
+
+
+
+
+modalStarContainer:{
+   width:'100%',
+   flexDirection:"row",
+
+},
+
+ratingText:{
+   fontFamily:"Poppins-Bold",
+   fontSize:RFValue(13),
+   marginLeft:'2%'
+
+},
+
+reviewText:{
+   fontFamily:"Poppins-Regular",
+   fontSize:RFValue(13),
+   marginLeft:'2%'
+
+},
+
+
+
+
+
+
+
+
    feedModalContainer:{
     width:'100%',
     height:RFValue(300),
@@ -116,6 +363,8 @@ export const styles=StyleSheet.create({
  
     
    },
+
+  
 
    image:{
       width:'100%',
